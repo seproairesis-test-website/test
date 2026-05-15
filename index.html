@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>SEP Sessions & Detox</title>
-  <meta name="description" content="SEP sessions and detox tracker with local storage." />
+  <title>SEP Make It Happen</title>
+  <meta name="description" content="SEP sessions, detox and checklist tracker with local storage." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -92,14 +92,6 @@
       padding: 26px 0 70px;
     }
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 18px;
-      padding: 16px 0 44px;
-    }
-
     button {
       appearance: none;
       border: 0;
@@ -108,13 +100,20 @@
       color: inherit;
     }
 
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      padding: 16px 0 44px;
+    }
+
     .brand {
       display: flex;
       align-items: center;
       gap: 12px;
-      text-decoration: none;
-      color: var(--text);
       background: transparent;
+      color: var(--text);
     }
 
     .brand-mark {
@@ -162,7 +161,8 @@
 
     .top-pill,
     .back-btn,
-    .theme-toggle {
+    .theme-toggle,
+    .edit-toggle {
       border: 1px solid var(--line);
       background: var(--card);
       backdrop-filter: blur(18px);
@@ -174,12 +174,14 @@
       white-space: nowrap;
     }
 
-    .back-btn {
+    .back-btn,
+    .edit-toggle {
       color: var(--text);
       display: none;
     }
 
-    .back-btn.show {
+    .back-btn.show,
+    .edit-toggle.show {
       display: inline-flex;
     }
 
@@ -242,7 +244,7 @@
     }
 
     h1 {
-      max-width: 880px;
+      max-width: 920px;
       font-size: clamp(48px, 10vw, 110px);
       line-height: 0.88;
       letter-spacing: -0.085em;
@@ -261,7 +263,7 @@
     }
 
     .hero-copy {
-      max-width: 570px;
+      max-width: 620px;
       color: var(--muted);
       font-size: 15px;
       line-height: 1.55;
@@ -357,7 +359,7 @@
     .choice-inner,
     .add-inner {
       text-align: center;
-      max-width: 520px;
+      max-width: 560px;
     }
 
     .icon-circle {
@@ -524,6 +526,81 @@
       border: 1px solid rgba(155,28,28,0.14);
     }
 
+    .bin-btn,
+    .move-btn,
+    .check-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .bin-btn {
+      color: var(--danger);
+      background: var(--danger-bg);
+    }
+
+    .checklist-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .check-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      border-radius: 22px;
+      padding: 12px;
+    }
+
+    .check-item.done .check-title {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .check-title {
+      font-weight: 850;
+      letter-spacing: -0.04em;
+      font-size: 16px;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .check-time {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .edit-controls {
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .edit-mode .edit-controls {
+      display: flex;
+    }
+
+    .normal-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .empty-note {
       color: var(--muted);
       font-size: 13px;
@@ -630,7 +707,7 @@
 
     @media (min-width: 850px) {
       .choice-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(3, 1fr);
       }
     }
 
@@ -681,6 +758,15 @@
         border-radius: 28px;
         padding: 22px;
       }
+
+      .check-item {
+        grid-template-columns: auto 1fr;
+      }
+
+      .normal-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+      }
     }
   </style>
 </head>
@@ -698,6 +784,7 @@
 
       <div class="top-actions">
         <button class="back-btn" id="backBtn" type="button">Back</button>
+        <button class="edit-toggle" id="editToggle" type="button">Edit</button>
         <button class="theme-toggle" id="themeToggle" type="button">
           <span class="theme-dot"></span>
           <span id="themeText">Dark</span>
@@ -715,10 +802,10 @@
 
         <div class="hero-bottom">
           <p class="hero-copy" id="heroCopy">
-            Track focused sessions or start a detox timer for something you want to quit. Everything saves locally and keeps working even when you close the page.
+            Track focused sessions, detox timers or daily checklists. Everything saves locally on this device.
           </p>
 
-          <div class="count-badge" id="countBadge">Sessions or detox</div>
+          <div class="count-badge" id="countBadge">Sessions, detox or checklist</div>
         </div>
       </div>
 
@@ -734,7 +821,7 @@
           <div class="choice-inner">
             <div class="icon-circle">+</div>
             <h2>Sessions.</h2>
-            <p>Log study, workouts, football, business work or any focused block. Type the time manually. Max 100 cards.</p>
+            <p>Create a session like Football, then gradually add time to it whenever you train.</p>
           </div>
         </article>
 
@@ -742,7 +829,15 @@
           <div class="choice-inner">
             <div class="icon-circle">↻</div>
             <h2>Detox.</h2>
-            <p>Track time away from sugar, smoking, drinking, scrolling or anything you want to quit. Timer keeps going offline.</p>
+            <p>Track time away from sugar, smoking, drinking, scrolling or anything you want to quit.</p>
+          </div>
+        </article>
+
+        <article class="choice-card" id="openChecklist">
+          <div class="choice-inner">
+            <div class="icon-circle">✓</div>
+            <h2>Checklist.</h2>
+            <p>Make a daily checklist. Choose timed habits or a normal checklist you can reorder.</p>
           </div>
         </article>
       </div>
@@ -756,37 +851,81 @@
       <div class="cards-grid" id="detoxGrid"></div>
     </section>
 
+    <section class="view" id="checklistChoiceView">
+      <div class="choice-grid">
+        <article class="choice-card" id="openTimeChecklist">
+          <div class="choice-inner">
+            <div class="icon-circle">⏱</div>
+            <h2>Time.</h2>
+            <p>Add daily habits with a time next to each one, like Study 45 min or Run 30 min.</p>
+          </div>
+        </article>
+
+        <article class="choice-card" id="openNormalChecklist">
+          <div class="choice-inner">
+            <div class="icon-circle">☑</div>
+            <h2>Normal.</h2>
+            <p>Add simple checklist habits. Use Edit to move them up and down in your order.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="view" id="timeChecklistView">
+      <div class="cards-grid" id="timeChecklistGrid"></div>
+    </section>
+
+    <section class="view" id="normalChecklistView">
+      <div class="cards-grid" id="normalChecklistGrid"></div>
+    </section>
+
     <p class="small-print">
       Your data is saved with local storage, so it stays on this browser and device.
     </p>
   </main>
 
-  <div class="modal" id="sessionModal">
+  <div class="modal" id="sessionCreateModal">
     <div class="modal-card">
       <h2>Add session.</h2>
-      <p>Type what you did and how long it took. This is for logged sessions, not a stopwatch.</p>
+      <p>Create a main session card. Example: Football, Study, Gym, SEP work.</p>
 
-      <form id="sessionForm">
+      <form id="sessionCreateForm">
         <div class="field">
-          <label for="sessionName">Session name</label>
-          <input id="sessionName" type="text" placeholder="Example: Football training" maxlength="50" required />
+          <label for="sessionCreateName">Session name</label>
+          <input id="sessionCreateName" type="text" placeholder="Example: Football" maxlength="50" required />
         </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-light" type="button" data-close-modal>Cancel</button>
+          <button class="btn btn-dark" type="submit">Create session</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="sessionTimeModal">
+    <div class="modal-card">
+      <h2>Add time.</h2>
+      <p>Add time to this session. It will be added to the total.</p>
+
+      <form id="sessionTimeForm">
+        <input id="activeSessionId" type="hidden" />
 
         <div class="row">
           <div class="field">
-            <label for="sessionHours">Hours</label>
-            <input id="sessionHours" type="number" placeholder="1" min="0" max="999" />
+            <label for="sessionAddHours">Hours</label>
+            <input id="sessionAddHours" type="number" placeholder="1" min="0" max="999" />
           </div>
 
           <div class="field">
-            <label for="sessionMinutes">Minutes</label>
-            <input id="sessionMinutes" type="number" placeholder="30" min="0" max="59" />
+            <label for="sessionAddMinutes">Minutes</label>
+            <input id="sessionAddMinutes" type="number" placeholder="30" min="0" max="59" />
           </div>
         </div>
 
         <div class="modal-actions">
-          <button class="btn btn-light" type="button" id="cancelSessionBtn">Cancel</button>
-          <button class="btn btn-dark" type="submit">Save session</button>
+          <button class="btn btn-light" type="button" data-close-modal>Cancel</button>
+          <button class="btn btn-dark" type="submit">Add time</button>
         </div>
       </form>
     </div>
@@ -795,7 +934,7 @@
   <div class="modal" id="detoxModal">
     <div class="modal-card">
       <h2>Add detox.</h2>
-      <p>Choose what you’re staying away from. The timer starts straight away and keeps counting even after refresh.</p>
+      <p>Choose what you’re staying away from. The timer starts straight away and keeps counting after refresh.</p>
 
       <form id="detoxForm">
         <div class="field">
@@ -809,34 +948,88 @@
         </div>
 
         <div class="modal-actions">
-          <button class="btn btn-light" type="button" id="cancelDetoxBtn">Cancel</button>
+          <button class="btn btn-light" type="button" data-close-modal>Cancel</button>
           <button class="btn btn-dark" type="submit">Start detox</button>
         </div>
       </form>
     </div>
   </div>
 
+  <div class="modal" id="timeChecklistModal">
+    <div class="modal-card">
+      <h2>Add habit.</h2>
+      <p>Add a habit with a daily time next to it.</p>
+
+      <form id="timeChecklistForm">
+        <div class="field">
+          <label for="timeHabitName">Habit</label>
+          <input id="timeHabitName" type="text" placeholder="Example: Study" maxlength="50" required />
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="timeHabitHours">Hours</label>
+            <input id="timeHabitHours" type="number" placeholder="0" min="0" max="999" />
+          </div>
+
+          <div class="field">
+            <label for="timeHabitMinutes">Minutes</label>
+            <input id="timeHabitMinutes" type="number" placeholder="45" min="0" max="59" />
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-light" type="button" data-close-modal>Cancel</button>
+          <button class="btn btn-dark" type="submit">Add habit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="normalChecklistModal">
+    <div class="modal-card">
+      <h2>Add item.</h2>
+      <p>Add a simple checklist habit.</p>
+
+      <form id="normalChecklistForm">
+        <div class="field">
+          <label for="normalHabitName">Habit</label>
+          <input id="normalHabitName" type="text" placeholder="Example: Brush teeth" maxlength="50" required />
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-light" type="button" data-close-modal>Cancel</button>
+          <button class="btn btn-dark" type="submit">Add item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
-    const STORAGE_SESSIONS = "sep_sessions_v2";
-    const STORAGE_DETOX = "sep_detox_v2";
     const STORAGE_THEME = "sep_theme_v1";
+    const STORAGE_SESSIONS = "sep_sessions_gradual_v1";
+    const STORAGE_DETOX = "sep_detox_v3";
+    const STORAGE_TIME_CHECKLIST = "sep_time_checklist_v1";
+    const STORAGE_NORMAL_CHECKLIST = "sep_normal_checklist_v1";
 
     const MAX_SESSIONS = 100;
     const MAX_DETOX = 10;
+    const MAX_CHECKLIST = 100;
 
     const root = document.documentElement;
 
     const homeView = document.getElementById("homeView");
     const sessionsView = document.getElementById("sessionsView");
     const detoxView = document.getElementById("detoxView");
+    const checklistChoiceView = document.getElementById("checklistChoiceView");
+    const timeChecklistView = document.getElementById("timeChecklistView");
+    const normalChecklistView = document.getElementById("normalChecklistView");
 
     const homeBtn = document.getElementById("homeBtn");
     const backBtn = document.getElementById("backBtn");
+    const editToggle = document.getElementById("editToggle");
     const themeToggle = document.getElementById("themeToggle");
     const themeText = document.getElementById("themeText");
-
-    const openSessions = document.getElementById("openSessions");
-    const openDetox = document.getElementById("openDetox");
 
     const heroEyebrow = document.getElementById("heroEyebrow");
     const heroTitle = document.getElementById("heroTitle");
@@ -844,26 +1037,49 @@
     const countBadge = document.getElementById("countBadge");
     const motivationText = document.getElementById("motivationText");
 
+    const openSessions = document.getElementById("openSessions");
+    const openDetox = document.getElementById("openDetox");
+    const openChecklist = document.getElementById("openChecklist");
+    const openTimeChecklist = document.getElementById("openTimeChecklist");
+    const openNormalChecklist = document.getElementById("openNormalChecklist");
+
     const sessionsGrid = document.getElementById("sessionsGrid");
     const detoxGrid = document.getElementById("detoxGrid");
+    const timeChecklistGrid = document.getElementById("timeChecklistGrid");
+    const normalChecklistGrid = document.getElementById("normalChecklistGrid");
 
-    const sessionModal = document.getElementById("sessionModal");
+    const sessionCreateModal = document.getElementById("sessionCreateModal");
+    const sessionTimeModal = document.getElementById("sessionTimeModal");
     const detoxModal = document.getElementById("detoxModal");
+    const timeChecklistModal = document.getElementById("timeChecklistModal");
+    const normalChecklistModal = document.getElementById("normalChecklistModal");
 
-    const sessionForm = document.getElementById("sessionForm");
-    const sessionNameInput = document.getElementById("sessionName");
-    const sessionHoursInput = document.getElementById("sessionHours");
-    const sessionMinutesInput = document.getElementById("sessionMinutes");
-    const cancelSessionBtn = document.getElementById("cancelSessionBtn");
+    const sessionCreateForm = document.getElementById("sessionCreateForm");
+    const sessionCreateName = document.getElementById("sessionCreateName");
+    const sessionTimeForm = document.getElementById("sessionTimeForm");
+    const activeSessionId = document.getElementById("activeSessionId");
+    const sessionAddHours = document.getElementById("sessionAddHours");
+    const sessionAddMinutes = document.getElementById("sessionAddMinutes");
 
     const detoxForm = document.getElementById("detoxForm");
     const detoxNameInput = document.getElementById("detoxName");
     const detoxGoalInput = document.getElementById("detoxGoal");
-    const cancelDetoxBtn = document.getElementById("cancelDetoxBtn");
+
+    const timeChecklistForm = document.getElementById("timeChecklistForm");
+    const timeHabitName = document.getElementById("timeHabitName");
+    const timeHabitHours = document.getElementById("timeHabitHours");
+    const timeHabitMinutes = document.getElementById("timeHabitMinutes");
+
+    const normalChecklistForm = document.getElementById("normalChecklistForm");
+    const normalHabitName = document.getElementById("normalHabitName");
 
     let currentView = "home";
+    let normalEditMode = false;
+
     let sessions = load(STORAGE_SESSIONS);
     let detoxes = load(STORAGE_DETOX);
+    let timeChecklist = load(STORAGE_TIME_CHECKLIST);
+    let normalChecklist = load(STORAGE_NORMAL_CHECKLIST);
 
     const speeches = [
       "One clean choice repeated daily becomes proof.",
@@ -934,31 +1150,69 @@
       homeView.classList.toggle("active", view === "home");
       sessionsView.classList.toggle("active", view === "sessions");
       detoxView.classList.toggle("active", view === "detox");
+      checklistChoiceView.classList.toggle("active", view === "checklistChoice");
+      timeChecklistView.classList.toggle("active", view === "timeChecklist");
+      normalChecklistView.classList.toggle("active", view === "normalChecklist");
 
       backBtn.classList.toggle("show", view !== "home");
+      editToggle.classList.toggle("show", view === "normalChecklist");
+
+      if (view !== "normalChecklist") {
+        normalEditMode = false;
+        editToggle.textContent = "Edit";
+      }
 
       if (view === "home") {
         heroEyebrow.textContent = "Make It Happen";
         heroTitle.textContent = "Choose your mode.";
-        heroCopy.textContent = "Track focused sessions or start a detox timer for something you want to quit. Everything saves locally and keeps working even when you close the page.";
-        countBadge.textContent = "Sessions or detox";
+        heroCopy.textContent = "Track focused sessions, detox timers or daily checklists. Everything saves locally on this device.";
+        countBadge.textContent = "Sessions, detox or checklist";
       }
 
       if (view === "sessions") {
         heroEyebrow.textContent = "Sessions";
-        heroTitle.textContent = "Log the work.";
-        heroCopy.textContent = "Add focused sessions manually. Great for study, football, workouts, business work or anything you want to measure.";
+        heroTitle.textContent = "Build the hours.";
+        heroCopy.textContent = "Create a session like Football, then keep adding time to the same card every time you train.";
         countBadge.textContent = `${sessions.length} / ${MAX_SESSIONS} sessions`;
       }
 
       if (view === "detox") {
         heroEyebrow.textContent = "Detox";
         heroTitle.textContent = "Stay clean from it.";
-        heroCopy.textContent = "Start a timer for something you want to stop doing. The timer keeps counting using saved timestamps, even offline.";
+        heroCopy.textContent = "Start a timer for something you want to stop doing. The timer keeps counting using saved timestamps.";
         countBadge.textContent = `${detoxes.length} / ${MAX_DETOX} detoxes`;
       }
 
+      if (view === "checklistChoice") {
+        heroEyebrow.textContent = "Checklist";
+        heroTitle.textContent = "Choose checklist type.";
+        heroCopy.textContent = "Use a timed daily list or a normal checklist you can reorder in edit mode.";
+        countBadge.textContent = "Time or normal";
+      }
+
+      if (view === "timeChecklist") {
+        heroEyebrow.textContent = "Time checklist";
+        heroTitle.textContent = "Daily time list.";
+        heroCopy.textContent = "Add habits with a time next to each one. Tick them off for today.";
+        countBadge.textContent = `${timeChecklist.length} / ${MAX_CHECKLIST} habits`;
+      }
+
+      if (view === "normalChecklist") {
+        heroEyebrow.textContent = "Normal checklist";
+        heroTitle.textContent = "Daily clean list.";
+        heroCopy.textContent = "Add simple habits. Press Edit to move them around in your order.";
+        countBadge.textContent = `${normalChecklist.length} / ${MAX_CHECKLIST} items`;
+      }
+
       render();
+    }
+
+    function goBack() {
+      if (currentView === "timeChecklist" || currentView === "normalChecklist") {
+        showView("checklistChoice");
+      } else {
+        showView("home");
+      }
     }
 
     function formatDuration(ms) {
@@ -979,7 +1233,7 @@
       ].join(":");
     }
 
-    function formatSessionMinutes(totalMinutes) {
+    function formatMinutes(totalMinutes) {
       const hours = Math.floor(totalMinutes / 60);
       const minutes = totalMinutes % 60;
 
@@ -989,8 +1243,14 @@
       return `${hours} hr ${minutes} min`;
     }
 
+    function minutesFromInputs(hours, minutes) {
+      const cleanHours = Number(hours || 0);
+      const cleanMinutes = Number(minutes || 0);
+      return cleanHours * 60 + cleanMinutes;
+    }
+
     function totalSessionMinutes() {
-      return sessions.reduce((sum, session) => sum + Number(session.minutes || 0), 0);
+      return sessions.reduce((sum, session) => sum + Number(session.totalMinutes || 0), 0);
     }
 
     function getDetoxElapsed(detox) {
@@ -1006,58 +1266,78 @@
       return Math.min(100, (elapsed / goalMs) * 100);
     }
 
-    function openSessionModal() {
-      if (sessions.length >= MAX_SESSIONS) {
-        alert("You can only have 100 sessions. Delete one before adding another.");
-        return;
-      }
-
-      sessionModal.classList.add("active");
-      sessionNameInput.value = "";
-      sessionHoursInput.value = "";
-      sessionMinutesInput.value = "";
-      setTimeout(() => sessionNameInput.focus(), 50);
-    }
-
-    function openDetoxModal() {
-      if (detoxes.length >= MAX_DETOX) {
-        alert("You can only have 10 detox cards. Delete one before adding another.");
-        return;
-      }
-
-      detoxModal.classList.add("active");
-      detoxNameInput.value = "";
-      detoxGoalInput.value = "";
-      setTimeout(() => detoxNameInput.focus(), 50);
+    function openModal(modal) {
+      modal.classList.add("active");
     }
 
     function closeModals() {
-      sessionModal.classList.remove("active");
-      detoxModal.classList.remove("active");
+      document.querySelectorAll(".modal").forEach(modal => modal.classList.remove("active"));
     }
 
-    function addSession(name, hours, minutes) {
-      const cleanName = name.trim();
-      const cleanHours = Number(hours || 0);
-      const cleanMinutes = Number(minutes || 0);
-      const totalMinutes = cleanHours * 60 + cleanMinutes;
-
-      if (!cleanName) return;
-
-      if (totalMinutes <= 0) {
-        alert("Add at least 1 minute.");
-        return;
-      }
-
+    function openSessionCreateModal() {
       if (sessions.length >= MAX_SESSIONS) {
         alert("You can only have 100 sessions.");
         return;
       }
 
+      sessionCreateName.value = "";
+      openModal(sessionCreateModal);
+      setTimeout(() => sessionCreateName.focus(), 50);
+    }
+
+    function openSessionTimeModal(id) {
+      activeSessionId.value = id;
+      sessionAddHours.value = "";
+      sessionAddMinutes.value = "";
+      openModal(sessionTimeModal);
+      setTimeout(() => sessionAddHours.focus(), 50);
+    }
+
+    function openDetoxModal() {
+      if (detoxes.length >= MAX_DETOX) {
+        alert("You can only have 10 detox cards.");
+        return;
+      }
+
+      detoxNameInput.value = "";
+      detoxGoalInput.value = "";
+      openModal(detoxModal);
+      setTimeout(() => detoxNameInput.focus(), 50);
+    }
+
+    function openTimeChecklistModal() {
+      if (timeChecklist.length >= MAX_CHECKLIST) {
+        alert("You can only have 100 checklist habits.");
+        return;
+      }
+
+      timeHabitName.value = "";
+      timeHabitHours.value = "";
+      timeHabitMinutes.value = "";
+      openModal(timeChecklistModal);
+      setTimeout(() => timeHabitName.focus(), 50);
+    }
+
+    function openNormalChecklistModal() {
+      if (normalChecklist.length >= MAX_CHECKLIST) {
+        alert("You can only have 100 checklist items.");
+        return;
+      }
+
+      normalHabitName.value = "";
+      openModal(normalChecklistModal);
+      setTimeout(() => normalHabitName.focus(), 50);
+    }
+
+    function addSession(name) {
+      const cleanName = name.trim();
+      if (!cleanName) return;
+
       sessions.unshift({
         id: makeId(),
         name: cleanName,
-        minutes: totalMinutes,
+        totalMinutes: 0,
+        entries: [],
         createdAt: now()
       });
 
@@ -1066,10 +1346,58 @@
       render();
     }
 
+    function addTimeToSession(id, hours, minutes) {
+      const addedMinutes = minutesFromInputs(hours, minutes);
+
+      if (addedMinutes <= 0) {
+        alert("Add at least 1 minute.");
+        return;
+      }
+
+      sessions = sessions.map(session => {
+        if (session.id !== id) return session;
+
+        const entries = Array.isArray(session.entries) ? session.entries : [];
+
+        return {
+          ...session,
+          totalMinutes: Number(session.totalMinutes || 0) + addedMinutes,
+          entries: [
+            {
+              id: makeId(),
+              minutes: addedMinutes,
+              createdAt: now()
+            },
+            ...entries
+          ]
+        };
+      });
+
+      save(STORAGE_SESSIONS, sessions);
+      closeModals();
+      render();
+    }
+
     function deleteSession(id) {
-      if (!confirm("Delete this session?")) return;
+      if (!confirm("Delete this whole session?")) return;
 
       sessions = sessions.filter(session => session.id !== id);
+      save(STORAGE_SESSIONS, sessions);
+      render();
+    }
+
+    function resetSession(id) {
+      if (!confirm("Reset this session time back to zero?")) return;
+
+      sessions = sessions.map(session => {
+        if (session.id !== id) return session;
+        return {
+          ...session,
+          totalMinutes: 0,
+          entries: []
+        };
+      });
+
       save(STORAGE_SESSIONS, sessions);
       render();
     }
@@ -1079,11 +1407,6 @@
       const cleanGoal = Number(goalDays);
 
       if (!cleanName || !cleanGoal || cleanGoal <= 0) return;
-
-      if (detoxes.length >= MAX_DETOX) {
-        alert("You can only have 10 detox cards.");
-        return;
-      }
 
       detoxes.unshift({
         id: makeId(),
@@ -1120,155 +1443,220 @@
       render();
     }
 
-    function renderSessionAddCard() {
-      const card = document.createElement("article");
-      card.className = "add-card";
+    function addTimeChecklistHabit(name, hours, minutes) {
+      const cleanName = name.trim();
+      const totalMinutes = minutesFromInputs(hours, minutes);
 
-      card.innerHTML = `
-        <div class="add-inner">
-          <div class="icon-circle">+</div>
-          <h2>Add session.</h2>
-          <p>Type the activity and how much time you spent. Max 100 cards.</p>
-          ${sessions.length >= MAX_SESSIONS ? `<p class="empty-note">Limit reached. Delete one session to add another.</p>` : ""}
-        </div>
-      `;
+      if (!cleanName) return;
 
-      card.addEventListener("click", openSessionModal);
-      return card;
-    }
+      if (totalMinutes <= 0) {
+        alert("Add at least 1 minute.");
+        return;
+      }
 
-    function renderDetoxAddCard() {
-      const card = document.createElement("article");
-      card.className = "add-card";
-
-      card.innerHTML = `
-        <div class="add-inner">
-          <div class="icon-circle">+</div>
-          <h2>Add detox.</h2>
-          <p>Start a timer for sugar, smoking, drinking, scrolling or anything you want to stop.</p>
-          ${detoxes.length >= MAX_DETOX ? `<p class="empty-note">Limit reached. Delete one detox to add another.</p>` : ""}
-        </div>
-      `;
-
-      card.addEventListener("click", openDetoxModal);
-      return card;
-    }
-
-    function renderSessionCard(session) {
-      const card = document.createElement("article");
-      card.className = "data-card";
-
-      const date = new Date(session.createdAt).toLocaleDateString(undefined, {
-        day: "2-digit",
-        month: "short",
-        year: "numeric"
+      timeChecklist.push({
+        id: makeId(),
+        name: cleanName,
+        minutes: totalMinutes,
+        done: false,
+        createdAt: now()
       });
 
-      card.innerHTML = `
-        <div class="data-top">
-          <h2 class="data-name">${escapeHtml(session.name)}</h2>
-          <div class="status light">Logged</div>
-        </div>
-
-        <div class="big-time">${formatSessionMinutes(Number(session.minutes || 0))}</div>
-
-        <div class="stats">
-          <div class="stat">
-            <span>Session</span>
-            <strong>${escapeHtml(session.name)}</strong>
-          </div>
-
-          <div class="stat">
-            <span>Time</span>
-            <strong>${formatSessionMinutes(Number(session.minutes || 0))}</strong>
-          </div>
-
-          <div class="stat">
-            <span>Date</span>
-            <strong>${date}</strong>
-          </div>
-        </div>
-
-        <div class="controls">
-          <button class="btn btn-danger" data-action="delete-session" data-id="${session.id}">Delete</button>
-        </div>
-      `;
-
-      return card;
+      save(STORAGE_TIME_CHECKLIST, timeChecklist);
+      closeModals();
+      render();
     }
 
-    function renderDetoxCard(detox) {
-      const elapsed = getDetoxElapsed(detox);
-      const progress = getDetoxProgress(detox);
-      const goalMs = Number(detox.goalDays) * 24 * 60 * 60 * 1000;
-      const remaining = Math.max(0, goalMs - elapsed);
+    function toggleTimeChecklist(id) {
+      timeChecklist = timeChecklist.map(item => {
+        if (item.id !== id) return item;
+        return {
+          ...item,
+          done: !item.done
+        };
+      });
 
+      save(STORAGE_TIME_CHECKLIST, timeChecklist);
+      render();
+    }
+
+    function deleteTimeChecklist(id) {
+      timeChecklist = timeChecklist.filter(item => item.id !== id);
+      save(STORAGE_TIME_CHECKLIST, timeChecklist);
+      render();
+    }
+
+    function addNormalChecklistItem(name) {
+      const cleanName = name.trim();
+      if (!cleanName) return;
+
+      normalChecklist.push({
+        id: makeId(),
+        name: cleanName,
+        done: false,
+        createdAt: now()
+      });
+
+      save(STORAGE_NORMAL_CHECKLIST, normalChecklist);
+      closeModals();
+      render();
+    }
+
+    function toggleNormalChecklist(id) {
+      normalChecklist = normalChecklist.map(item => {
+        if (item.id !== id) return item;
+        return {
+          ...item,
+          done: !item.done
+        };
+      });
+
+      save(STORAGE_NORMAL_CHECKLIST, normalChecklist);
+      render();
+    }
+
+    function deleteNormalChecklist(id) {
+      normalChecklist = normalChecklist.filter(item => item.id !== id);
+      save(STORAGE_NORMAL_CHECKLIST, normalChecklist);
+      render();
+    }
+
+    function moveNormalChecklist(id, direction) {
+      const index = normalChecklist.findIndex(item => item.id === id);
+      if (index === -1) return;
+
+      const newIndex = direction === "up" ? index - 1 : index + 1;
+      if (newIndex < 0 || newIndex >= normalChecklist.length) return;
+
+      const copied = [...normalChecklist];
+      const item = copied[index];
+      copied[index] = copied[newIndex];
+      copied[newIndex] = item;
+
+      normalChecklist = copied;
+      save(STORAGE_NORMAL_CHECKLIST, normalChecklist);
+      render();
+    }
+
+    function renderAddCard(title, copy, clickHandler) {
       const card = document.createElement("article");
-      card.className = "data-card";
-
+      card.className = "add-card";
       card.innerHTML = `
-        <div class="data-top">
-          <h2 class="data-name">${escapeHtml(detox.name)}</h2>
-          <div class="status dark">Active</div>
-        </div>
-
-        <div class="big-time" data-detox-time="${detox.id}">${formatDuration(elapsed)}</div>
-
-        <div class="stats">
-          <div class="stat">
-            <span>Detox</span>
-            <strong>${escapeHtml(detox.name)}</strong>
-          </div>
-
-          <div class="stat">
-            <span>Goal</span>
-            <strong>${detox.goalDays} day${Number(detox.goalDays) === 1 ? "" : "s"}</strong>
-          </div>
-
-          <div class="stat">
-            <span>Remaining</span>
-            <strong data-detox-remaining="${detox.id}">${remaining <= 0 ? "Goal reached" : formatDuration(remaining)}</strong>
-          </div>
-        </div>
-
-        <div class="progress-wrap">
-          <div class="progress" data-detox-progress="${detox.id}" style="width: ${progress}%"></div>
-        </div>
-
-        <div class="controls">
-          <button class="btn btn-light" data-action="reset-detox" data-id="${detox.id}">Reset</button>
-          <button class="btn btn-danger" data-action="delete-detox" data-id="${detox.id}">Delete</button>
+        <div class="add-inner">
+          <div class="icon-circle">+</div>
+          <h2>${title}</h2>
+          <p>${copy}</p>
         </div>
       `;
-
+      card.addEventListener("click", clickHandler);
       return card;
     }
 
     function renderSessions() {
       sessionsGrid.innerHTML = "";
-      sessionsGrid.appendChild(renderSessionAddCard());
+      sessionsGrid.appendChild(renderAddCard("Add session.", "Create a main card like Football, Study or Gym. Then keep adding time to it.", openSessionCreateModal));
 
       sessions.forEach(session => {
-        sessionsGrid.appendChild(renderSessionCard(session));
+        const entries = Array.isArray(session.entries) ? session.entries : [];
+        const latest = entries[0] ? formatMinutes(entries[0].minutes) : "No time yet";
+
+        const card = document.createElement("article");
+        card.className = "data-card";
+
+        card.innerHTML = `
+          <div class="data-top">
+            <h2 class="data-name">${escapeHtml(session.name)}</h2>
+            <div class="status dark">${entries.length} entries</div>
+          </div>
+
+          <div class="big-time">${formatMinutes(Number(session.totalMinutes || 0))}</div>
+
+          <div class="stats">
+            <div class="stat">
+              <span>Session</span>
+              <strong>${escapeHtml(session.name)}</strong>
+            </div>
+
+            <div class="stat">
+              <span>Total time</span>
+              <strong>${formatMinutes(Number(session.totalMinutes || 0))}</strong>
+            </div>
+
+            <div class="stat">
+              <span>Latest</span>
+              <strong>${latest}</strong>
+            </div>
+          </div>
+
+          <div class="controls">
+            <button class="btn btn-dark" data-action="add-session-time" data-id="${session.id}">Add time</button>
+            <button class="btn btn-light" data-action="reset-session" data-id="${session.id}">Reset</button>
+            <button class="btn btn-danger" data-action="delete-session" data-id="${session.id}">Delete</button>
+          </div>
+        `;
+
+        sessionsGrid.appendChild(card);
       });
 
       if (sessions.length === 0) {
         const note = document.createElement("p");
         note.className = "empty-note";
-        note.textContent = "No sessions yet. Add one and start stacking proof.";
+        note.textContent = "No sessions yet. Add Football, Study, Gym or anything you want to track.";
         sessionsGrid.appendChild(note);
       }
 
-      const total = formatSessionMinutes(totalSessionMinutes());
-      countBadge.textContent = `${sessions.length} / ${MAX_SESSIONS} sessions • ${total}`;
+      countBadge.textContent = `${sessions.length} / ${MAX_SESSIONS} sessions • ${formatMinutes(totalSessionMinutes())}`;
     }
 
     function renderDetoxes() {
       detoxGrid.innerHTML = "";
-      detoxGrid.appendChild(renderDetoxAddCard());
+      detoxGrid.appendChild(renderAddCard("Add detox.", "Start a timer for sugar, smoking, drinking, scrolling or anything you want to stop.", openDetoxModal));
 
       detoxes.forEach(detox => {
-        detoxGrid.appendChild(renderDetoxCard(detox));
+        const elapsed = getDetoxElapsed(detox);
+        const progress = getDetoxProgress(detox);
+        const goalMs = Number(detox.goalDays) * 24 * 60 * 60 * 1000;
+        const remaining = Math.max(0, goalMs - elapsed);
+
+        const card = document.createElement("article");
+        card.className = "data-card";
+
+        card.innerHTML = `
+          <div class="data-top">
+            <h2 class="data-name">${escapeHtml(detox.name)}</h2>
+            <div class="status dark">Active</div>
+          </div>
+
+          <div class="big-time" data-detox-time="${detox.id}">${formatDuration(elapsed)}</div>
+
+          <div class="stats">
+            <div class="stat">
+              <span>Detox</span>
+              <strong>${escapeHtml(detox.name)}</strong>
+            </div>
+
+            <div class="stat">
+              <span>Goal</span>
+              <strong>${detox.goalDays} day${Number(detox.goalDays) === 1 ? "" : "s"}</strong>
+            </div>
+
+            <div class="stat">
+              <span>Remaining</span>
+              <strong data-detox-remaining="${detox.id}">${remaining <= 0 ? "Goal reached" : formatDuration(remaining)}</strong>
+            </div>
+          </div>
+
+          <div class="progress-wrap">
+            <div class="progress" data-detox-progress="${detox.id}" style="width: ${progress}%"></div>
+          </div>
+
+          <div class="controls">
+            <button class="btn btn-light" data-action="reset-detox" data-id="${detox.id}">Reset</button>
+            <button class="btn btn-danger" data-action="delete-detox" data-id="${detox.id}">Delete</button>
+          </div>
+        `;
+
+        detoxGrid.appendChild(card);
       });
 
       if (detoxes.length === 0) {
@@ -1281,10 +1669,93 @@
       countBadge.textContent = `${detoxes.length} / ${MAX_DETOX} detoxes`;
     }
 
+    function renderTimeChecklist() {
+      timeChecklistGrid.innerHTML = "";
+      timeChecklistGrid.appendChild(renderAddCard("Add habit.", "Add a daily habit with a time next to it.", openTimeChecklistModal));
+
+      const card = document.createElement("article");
+      card.className = "data-card";
+
+      const doneCount = timeChecklist.filter(item => item.done).length;
+
+      card.innerHTML = `
+        <div class="data-top">
+          <h2 class="data-name">Today.</h2>
+          <div class="status dark">${doneCount} / ${timeChecklist.length}</div>
+        </div>
+
+        <div class="checklist-list">
+          ${
+            timeChecklist.length
+              ? timeChecklist.map(item => `
+                <div class="check-item ${item.done ? "done" : ""}">
+                  <button class="check-btn" data-action="toggle-time-check" data-id="${item.id}">${item.done ? "✓" : ""}</button>
+                  <div>
+                    <div class="check-title">${escapeHtml(item.name)}</div>
+                    <span class="check-time">${formatMinutes(Number(item.minutes || 0))}</span>
+                  </div>
+                  <button class="bin-btn" data-action="delete-time-check" data-id="${item.id}">⌫</button>
+                </div>
+              `).join("")
+              : `<p class="empty-note">No timed habits yet. Add one above.</p>`
+          }
+        </div>
+      `;
+
+      timeChecklistGrid.appendChild(card);
+      countBadge.textContent = `${timeChecklist.length} / ${MAX_CHECKLIST} habits`;
+    }
+
+    function renderNormalChecklist() {
+      normalChecklistGrid.innerHTML = "";
+      normalChecklistGrid.classList.toggle("edit-mode", normalEditMode);
+      normalChecklistGrid.appendChild(renderAddCard("Add item.", "Add a simple checklist habit. Press Edit to move items.", openNormalChecklistModal));
+
+      const card = document.createElement("article");
+      card.className = "data-card";
+
+      const doneCount = normalChecklist.filter(item => item.done).length;
+
+      card.innerHTML = `
+        <div class="data-top">
+          <h2 class="data-name">Today.</h2>
+          <div class="status dark">${doneCount} / ${normalChecklist.length}</div>
+        </div>
+
+        <div class="checklist-list">
+          ${
+            normalChecklist.length
+              ? normalChecklist.map(item => `
+                <div class="check-item ${item.done ? "done" : ""}">
+                  <button class="check-btn" data-action="toggle-normal-check" data-id="${item.id}">${item.done ? "✓" : ""}</button>
+                  <div>
+                    <div class="check-title">${escapeHtml(item.name)}</div>
+                  </div>
+                  <div class="normal-actions">
+                    <div class="edit-controls">
+                      <button class="move-btn" data-action="move-normal-up" data-id="${item.id}">↑</button>
+                      <button class="move-btn" data-action="move-normal-down" data-id="${item.id}">↓</button>
+                    </div>
+                    <button class="bin-btn" data-action="delete-normal-check" data-id="${item.id}">⌫</button>
+                  </div>
+                </div>
+              `).join("")
+              : `<p class="empty-note">No checklist items yet. Add one above.</p>`
+          }
+        </div>
+      `;
+
+      normalChecklistGrid.appendChild(card);
+      countBadge.textContent = `${normalChecklist.length} / ${MAX_CHECKLIST} items`;
+    }
+
     function render() {
       if (currentView === "sessions") renderSessions();
       if (currentView === "detox") renderDetoxes();
-      if (currentView === "home") countBadge.textContent = "Sessions or detox";
+      if (currentView === "timeChecklist") renderTimeChecklist();
+      if (currentView === "normalChecklist") renderNormalChecklist();
+      if (currentView === "home") countBadge.textContent = "Sessions, detox or checklist";
+      if (currentView === "checklistChoice") countBadge.textContent = "Time or normal";
     }
 
     function updateLiveDetox() {
@@ -1304,57 +1775,106 @@
       });
     }
 
-    openSessions.addEventListener("click", () => showView("sessions"));
-    openDetox.addEventListener("click", () => showView("detox"));
     homeBtn.addEventListener("click", () => showView("home"));
-    backBtn.addEventListener("click", () => showView("home"));
+    backBtn.addEventListener("click", goBack);
     themeToggle.addEventListener("click", toggleTheme);
 
-    sessionForm.addEventListener("submit", function(event) {
-      event.preventDefault();
-      addSession(sessionNameInput.value, sessionHoursInput.value, sessionMinutesInput.value);
+    editToggle.addEventListener("click", () => {
+      normalEditMode = !normalEditMode;
+      editToggle.textContent = normalEditMode ? "Done" : "Edit";
+      render();
     });
 
-    detoxForm.addEventListener("submit", function(event) {
+    openSessions.addEventListener("click", () => showView("sessions"));
+    openDetox.addEventListener("click", () => showView("detox"));
+    openChecklist.addEventListener("click", () => showView("checklistChoice"));
+    openTimeChecklist.addEventListener("click", () => showView("timeChecklist"));
+    openNormalChecklist.addEventListener("click", () => showView("normalChecklist"));
+
+    document.addEventListener("click", event => {
+      if (event.target.matches("[data-close-modal]")) closeModals();
+    });
+
+    document.querySelectorAll(".modal").forEach(modal => {
+      modal.addEventListener("click", event => {
+        if (event.target === modal) closeModals();
+      });
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeModals();
+    });
+
+    sessionCreateForm.addEventListener("submit", event => {
+      event.preventDefault();
+      addSession(sessionCreateName.value);
+    });
+
+    sessionTimeForm.addEventListener("submit", event => {
+      event.preventDefault();
+      addTimeToSession(activeSessionId.value, sessionAddHours.value, sessionAddMinutes.value);
+    });
+
+    detoxForm.addEventListener("submit", event => {
       event.preventDefault();
       addDetox(detoxNameInput.value, detoxGoalInput.value);
     });
 
-    cancelSessionBtn.addEventListener("click", closeModals);
-    cancelDetoxBtn.addEventListener("click", closeModals);
-
-    sessionModal.addEventListener("click", function(event) {
-      if (event.target === sessionModal) closeModals();
+    timeChecklistForm.addEventListener("submit", event => {
+      event.preventDefault();
+      addTimeChecklistHabit(timeHabitName.value, timeHabitHours.value, timeHabitMinutes.value);
     });
 
-    detoxModal.addEventListener("click", function(event) {
-      if (event.target === detoxModal) closeModals();
+    normalChecklistForm.addEventListener("submit", event => {
+      event.preventDefault();
+      addNormalChecklistItem(normalHabitName.value);
     });
 
-    document.addEventListener("keydown", function(event) {
-      if (event.key === "Escape") closeModals();
-    });
-
-    sessionsGrid.addEventListener("click", function(event) {
+    sessionsGrid.addEventListener("click", event => {
       const button = event.target.closest("button[data-action]");
       if (!button) return;
 
-      if (button.dataset.action === "delete-session") {
-        deleteSession(button.dataset.id);
-      }
+      const action = button.dataset.action;
+      const id = button.dataset.id;
+
+      if (action === "add-session-time") openSessionTimeModal(id);
+      if (action === "reset-session") resetSession(id);
+      if (action === "delete-session") deleteSession(id);
     });
 
-    detoxGrid.addEventListener("click", function(event) {
+    detoxGrid.addEventListener("click", event => {
       const button = event.target.closest("button[data-action]");
       if (!button) return;
 
-      if (button.dataset.action === "reset-detox") {
-        resetDetox(button.dataset.id);
-      }
+      const action = button.dataset.action;
+      const id = button.dataset.id;
 
-      if (button.dataset.action === "delete-detox") {
-        deleteDetox(button.dataset.id);
-      }
+      if (action === "reset-detox") resetDetox(id);
+      if (action === "delete-detox") deleteDetox(id);
+    });
+
+    timeChecklistGrid.addEventListener("click", event => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+
+      const action = button.dataset.action;
+      const id = button.dataset.id;
+
+      if (action === "toggle-time-check") toggleTimeChecklist(id);
+      if (action === "delete-time-check") deleteTimeChecklist(id);
+    });
+
+    normalChecklistGrid.addEventListener("click", event => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+
+      const action = button.dataset.action;
+      const id = button.dataset.id;
+
+      if (action === "toggle-normal-check") toggleNormalChecklist(id);
+      if (action === "delete-normal-check") deleteNormalChecklist(id);
+      if (action === "move-normal-up") moveNormalChecklist(id, "up");
+      if (action === "move-normal-down") moveNormalChecklist(id, "down");
     });
 
     initTheme();
