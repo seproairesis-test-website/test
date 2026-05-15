@@ -539,7 +539,7 @@
       color: var(--text);
       font-size: 16px;
       font-weight: 900;
-      flex: 0 0 auto;
+      flex-shrink: 0;
     }
 
     .bin-btn {
@@ -684,7 +684,11 @@
     }
 
     input[type="time"] {
-      min-height: 52px;
+      color-scheme: light;
+    }
+
+    html[data-theme="dark"] input[type="time"] {
+      color-scheme: dark;
     }
 
     .row {
@@ -862,7 +866,7 @@
           <div class="choice-inner">
             <div class="icon-circle">⏱</div>
             <h2>Time.</h2>
-            <p>Add daily habits with a specific time next to each one, like Football at 2pm.</p>
+            <p>Add daily habits with a clock time next to each one, like Study at 5pm.</p>
           </div>
         </article>
 
@@ -963,7 +967,7 @@
   <div class="modal" id="timeChecklistModal">
     <div class="modal-card">
       <h2>Add habit.</h2>
-      <p>Add a habit with a daily time next to it, like Football training at 2pm.</p>
+      <p>Add a habit with a daily clock time next to it.</p>
 
       <form id="timeChecklistForm">
         <div class="field">
@@ -1183,14 +1187,14 @@
       if (view === "checklistChoice") {
         heroEyebrow.textContent = "Checklist";
         heroTitle.textContent = "Choose checklist type.";
-        heroCopy.textContent = "Use a daily list with specific times, or a normal checklist you can reorder in edit mode.";
+        heroCopy.textContent = "Use a daily list with clock times or a normal checklist you can reorder.";
         countBadge.textContent = "Time or normal";
       }
 
       if (view === "timeChecklist") {
         heroEyebrow.textContent = "Time checklist";
-        heroTitle.textContent = "Daily time list.";
-        heroCopy.textContent = "Add habits with a specific time next to each one. Perfect for routines, training and study.";
+        heroTitle.textContent = "Daily clock list.";
+        heroCopy.textContent = "Add habits with a specific time next to each one, like Football at 2pm.";
         countBadge.textContent = `${timeChecklist.length} / ${MAX_CHECKLIST} habits`;
       }
 
@@ -1243,10 +1247,7 @@
     function formatClockTime(time) {
       if (!time) return "";
 
-      const parts = time.split(":");
-      const hours = Number(parts[0]);
-      const minutes = Number(parts[1]);
-
+      const [hours, minutes] = time.split(":").map(Number);
       const suffix = hours >= 12 ? "pm" : "am";
       const displayHours = hours % 12 || 12;
 
@@ -1487,4 +1488,408 @@
       render();
     }
 
-   
+    function deleteTimeChecklist(id) {
+      timeChecklist = timeChecklist.filter(item => item.id !== id);
+      save(STORAGE_TIME_CHECKLIST, timeChecklist);
+      render();
+    }
+
+    function addNormalChecklistItem(name) {
+      const cleanName = name.trim();
+      if (!cleanName) return;
+
+      normalChecklist.push({
+        id: makeId(),
+        name: cleanName,
+        done: false,
+        createdAt: now()
+      });
+
+      save(STORAGE_NORMAL_CHECKLIST, normalChecklist);
+      closeModals();
+      render();
+    }
+
+    function toggleNormalChecklist(id) {
+      normalChecklist = normalChecklist.map(item => {
+        if (item.id !== id) return item;
+        return {
+          ...item,
+          done: !item.done
+        };
+      });
+
+      save(STORAGE_NORMAL_CHECKLIST, normalChecklist);
+      render();
+    }
+
+    function deleteNormalChecklist(id) {
+      normalChecklist = normalChecklist.filter(item => item.id !== id);
+      save(STORAGE_NORMAL_CHECKLIST, normalChecklist);
+      render();
+    }
+
+    function moveNormalChecklist(id, direction) {
+      const index = normalChecklist.findIndex(item => item.id === id);
+      if (index === -1) return;
+
+      const newIndex = direction === "up" ? index - 1 : index + 1;
+      if (newIndex < 0 || newIndex >= normalChecklist.length) return;
+
+      const copied = [...normalChecklist];
+      const item = copied[index];
+      copied[index] = copied[newIndex];
+      copied[newIndex] = item;
+
+      normalChecklist = copied;
+      save(STORAGE_NORMAL_CHECKLIST, normalChecklist);
+      render();
+    }
+
+    function renderAddCard(title, copy, clickHandler) {
+      const card = document.createElement("article");
+      card.className = "add-card";
+      card.innerHTML = `
+        <div class="add-inner">
+          <div class="icon-circle">+</div>
+          <h2>${title}</h2>
+          <p>${copy}</p>
+        </div>
+      `;
+      card.addEventListener("click", clickHandler);
+      return card;
+    }
+
+    function renderSessions() {
+      sessionsGrid.innerHTML = "";
+      sessionsGrid.appendChild(renderAddCard("Add session.", "Create a main card like Football, Study or Gym. Then keep adding time to it.", openSessionCreateModal));
+
+      sessions.forEach(session => {
+        const entries = Array.isArray(session.entries) ? session.entries : [];
+        const latest = entries[0] ? formatMinutes(entries[0].minutes) : "No time yet";
+
+        const card = document.createElement("article");
+        card.className = "data-card";
+
+        card.innerHTML = `
+          <div class="data-top">
+            <h2 class="data-name">${escapeHtml(session.name)}</h2>
+            <div class="status dark">${entries.length} entries</div>
+          </div>
+
+          <div class="big-time">${formatMinutes(Number(session.totalMinutes || 0))}</div>
+
+          <div class="stats">
+            <div class="stat">
+              <span>Session</span>
+              <strong>${escapeHtml(session.name)}</strong>
+            </div>
+
+            <div class="stat">
+              <span>Total time</span>
+              <strong>${formatMinutes(Number(session.totalMinutes || 0))}</strong>
+            </div>
+
+            <div class="stat">
+              <span>Latest</span>
+              <strong>${latest}</strong>
+            </div>
+          </div>
+
+          <div class="controls">
+            <button class="btn btn-dark" data-action="add-session-time" data-id="${session.id}">Add time</button>
+            <button class="btn btn-light" data-action="reset-session" data-id="${session.id}">Reset</button>
+            <button class="btn btn-danger" data-action="delete-session" data-id="${session.id}">Delete</button>
+          </div>
+        `;
+
+        sessionsGrid.appendChild(card);
+      });
+
+      if (sessions.length === 0) {
+        const note = document.createElement("p");
+        note.className = "empty-note";
+        note.textContent = "No sessions yet. Add Football, Study, Gym or anything you want to track.";
+        sessionsGrid.appendChild(note);
+      }
+
+      countBadge.textContent = `${sessions.length} / ${MAX_SESSIONS} sessions • ${formatMinutes(totalSessionMinutes())}`;
+    }
+
+    function renderDetoxes() {
+      detoxGrid.innerHTML = "";
+      detoxGrid.appendChild(renderAddCard("Add detox.", "Start a timer for sugar, smoking, drinking, scrolling or anything you want to stop.", openDetoxModal));
+
+      detoxes.forEach(detox => {
+        const elapsed = getDetoxElapsed(detox);
+        const progress = getDetoxProgress(detox);
+        const goalMs = Number(detox.goalDays) * 24 * 60 * 60 * 1000;
+        const remaining = Math.max(0, goalMs - elapsed);
+
+        const card = document.createElement("article");
+        card.className = "data-card";
+
+        card.innerHTML = `
+          <div class="data-top">
+            <h2 class="data-name">${escapeHtml(detox.name)}</h2>
+            <div class="status dark">Active</div>
+          </div>
+
+          <div class="big-time" data-detox-time="${detox.id}">${formatDuration(elapsed)}</div>
+
+          <div class="stats">
+            <div class="stat">
+              <span>Detox</span>
+              <strong>${escapeHtml(detox.name)}</strong>
+            </div>
+
+            <div class="stat">
+              <span>Goal</span>
+              <strong>${detox.goalDays} day${Number(detox.goalDays) === 1 ? "" : "s"}</strong>
+            </div>
+
+            <div class="stat">
+              <span>Remaining</span>
+              <strong data-detox-remaining="${detox.id}">${remaining <= 0 ? "Goal reached" : formatDuration(remaining)}</strong>
+            </div>
+          </div>
+
+          <div class="progress-wrap">
+            <div class="progress" data-detox-progress="${detox.id}" style="width: ${progress}%"></div>
+          </div>
+
+          <div class="controls">
+            <button class="btn btn-light" data-action="reset-detox" data-id="${detox.id}">Reset</button>
+            <button class="btn btn-danger" data-action="delete-detox" data-id="${detox.id}">Delete</button>
+          </div>
+        `;
+
+        detoxGrid.appendChild(card);
+      });
+
+      if (detoxes.length === 0) {
+        const note = document.createElement("p");
+        note.className = "empty-note";
+        note.textContent = "No detoxes yet. Add one and the timer starts.";
+        detoxGrid.appendChild(note);
+      }
+
+      countBadge.textContent = `${detoxes.length} / ${MAX_DETOX} detoxes`;
+    }
+
+    function renderTimeChecklist() {
+      timeChecklistGrid.innerHTML = "";
+      timeChecklistGrid.appendChild(renderAddCard("Add habit.", "Add a daily habit with a specific clock time next to it.", openTimeChecklistModal));
+
+      const card = document.createElement("article");
+      card.className = "data-card";
+
+      const doneCount = timeChecklist.filter(item => item.done).length;
+
+      card.innerHTML = `
+        <div class="data-top">
+          <h2 class="data-name">Today.</h2>
+          <div class="status dark">${doneCount} / ${timeChecklist.length}</div>
+        </div>
+
+        <div class="checklist-list">
+          ${
+            timeChecklist.length
+              ? timeChecklist.map(item => `
+                <div class="check-item ${item.done ? "done" : ""}">
+                  <button class="check-btn" data-action="toggle-time-check" data-id="${item.id}">${item.done ? "✓" : ""}</button>
+                  <div>
+                    <div class="check-title">${escapeHtml(item.name)}</div>
+                    <span class="check-time">${formatClockTime(item.clockTime)}</span>
+                  </div>
+                  <button class="bin-btn" data-action="delete-time-check" data-id="${item.id}">⌫</button>
+                </div>
+              `).join("")
+              : `<p class="empty-note">No timed habits yet. Add one above.</p>`
+          }
+        </div>
+      `;
+
+      timeChecklistGrid.appendChild(card);
+      countBadge.textContent = `${timeChecklist.length} / ${MAX_CHECKLIST} habits`;
+    }
+
+    function renderNormalChecklist() {
+      normalChecklistGrid.innerHTML = "";
+      normalChecklistGrid.classList.toggle("edit-mode", normalEditMode);
+      normalChecklistGrid.appendChild(renderAddCard("Add item.", "Add a simple checklist habit. Press Edit to move items.", openNormalChecklistModal));
+
+      const card = document.createElement("article");
+      card.className = "data-card";
+
+      const doneCount = normalChecklist.filter(item => item.done).length;
+
+      card.innerHTML = `
+        <div class="data-top">
+          <h2 class="data-name">Today.</h2>
+          <div class="status dark">${doneCount} / ${normalChecklist.length}</div>
+        </div>
+
+        <div class="checklist-list">
+          ${
+            normalChecklist.length
+              ? normalChecklist.map(item => `
+                <div class="check-item ${item.done ? "done" : ""}">
+                  <button class="check-btn" data-action="toggle-normal-check" data-id="${item.id}">${item.done ? "✓" : ""}</button>
+                  <div>
+                    <div class="check-title">${escapeHtml(item.name)}</div>
+                  </div>
+                  <div class="normal-actions">
+                    <div class="edit-controls">
+                      <button class="move-btn" data-action="move-normal-up" data-id="${item.id}">↑</button>
+                      <button class="move-btn" data-action="move-normal-down" data-id="${item.id}">↓</button>
+                    </div>
+                    <button class="bin-btn" data-action="delete-normal-check" data-id="${item.id}">⌫</button>
+                  </div>
+                </div>
+              `).join("")
+              : `<p class="empty-note">No checklist items yet. Add one above.</p>`
+          }
+        </div>
+      `;
+
+      normalChecklistGrid.appendChild(card);
+      countBadge.textContent = `${normalChecklist.length} / ${MAX_CHECKLIST} items`;
+    }
+
+    function render() {
+      if (currentView === "sessions") renderSessions();
+      if (currentView === "detox") renderDetoxes();
+      if (currentView === "timeChecklist") renderTimeChecklist();
+      if (currentView === "normalChecklist") renderNormalChecklist();
+      if (currentView === "home") countBadge.textContent = "Sessions, detox or checklist";
+      if (currentView === "checklistChoice") countBadge.textContent = "Time or normal";
+    }
+
+    function updateLiveDetox() {
+      detoxes.forEach(detox => {
+        const elapsed = getDetoxElapsed(detox);
+        const progress = getDetoxProgress(detox);
+        const goalMs = Number(detox.goalDays) * 24 * 60 * 60 * 1000;
+        const remaining = Math.max(0, goalMs - elapsed);
+
+        const timeEl = document.querySelector(`[data-detox-time="${detox.id}"]`);
+        const remainingEl = document.querySelector(`[data-detox-remaining="${detox.id}"]`);
+        const progressEl = document.querySelector(`[data-detox-progress="${detox.id}"]`);
+
+        if (timeEl) timeEl.textContent = formatDuration(elapsed);
+        if (remainingEl) remainingEl.textContent = remaining <= 0 ? "Goal reached" : formatDuration(remaining);
+        if (progressEl) progressEl.style.width = `${progress}%`;
+      });
+    }
+
+    homeBtn.addEventListener("click", () => showView("home"));
+    backBtn.addEventListener("click", goBack);
+    themeToggle.addEventListener("click", toggleTheme);
+
+    editToggle.addEventListener("click", () => {
+      normalEditMode = !normalEditMode;
+      editToggle.textContent = normalEditMode ? "Done" : "Edit";
+      render();
+    });
+
+    openSessions.addEventListener("click", () => showView("sessions"));
+    openDetox.addEventListener("click", () => showView("detox"));
+    openChecklist.addEventListener("click", () => showView("checklistChoice"));
+    openTimeChecklist.addEventListener("click", () => showView("timeChecklist"));
+    openNormalChecklist.addEventListener("click", () => showView("normalChecklist"));
+
+    document.addEventListener("click", event => {
+      if (event.target.matches("[data-close-modal]")) closeModals();
+    });
+
+    document.querySelectorAll(".modal").forEach(modal => {
+      modal.addEventListener("click", event => {
+        if (event.target === modal) closeModals();
+      });
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeModals();
+    });
+
+    sessionCreateForm.addEventListener("submit", event => {
+      event.preventDefault();
+      addSession(sessionCreateName.value);
+    });
+
+    sessionTimeForm.addEventListener("submit", event => {
+      event.preventDefault();
+      addTimeToSession(activeSessionId.value, sessionAddHours.value, sessionAddMinutes.value);
+    });
+
+    detoxForm.addEventListener("submit", event => {
+      event.preventDefault();
+      addDetox(detoxNameInput.value, detoxGoalInput.value);
+    });
+
+    timeChecklistForm.addEventListener("submit", event => {
+      event.preventDefault();
+      addTimeChecklistHabit(timeHabitName.value, timeHabitClock.value);
+    });
+
+    normalChecklistForm.addEventListener("submit", event => {
+      event.preventDefault();
+      addNormalChecklistItem(normalHabitName.value);
+    });
+
+    sessionsGrid.addEventListener("click", event => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+
+      const action = button.dataset.action;
+      const id = button.dataset.id;
+
+      if (action === "add-session-time") openSessionTimeModal(id);
+      if (action === "reset-session") resetSession(id);
+      if (action === "delete-session") deleteSession(id);
+    });
+
+    detoxGrid.addEventListener("click", event => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+
+      const action = button.dataset.action;
+      const id = button.dataset.id;
+
+      if (action === "reset-detox") resetDetox(id);
+      if (action === "delete-detox") deleteDetox(id);
+    });
+
+    timeChecklistGrid.addEventListener("click", event => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+
+      const action = button.dataset.action;
+      const id = button.dataset.id;
+
+      if (action === "toggle-time-check") toggleTimeChecklist(id);
+      if (action === "delete-time-check") deleteTimeChecklist(id);
+    });
+
+    normalChecklistGrid.addEventListener("click", event => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+
+      const action = button.dataset.action;
+      const id = button.dataset.id;
+
+      if (action === "toggle-normal-check") toggleNormalChecklist(id);
+      if (action === "delete-normal-check") deleteNormalChecklist(id);
+      if (action === "move-normal-up") moveNormalChecklist(id, "up");
+      if (action === "move-normal-down") moveNormalChecklist(id, "down");
+    });
+
+    initTheme();
+    setMotivation();
+    showView("home");
+    updateLiveDetox();
+    setInterval(updateLiveDetox, 1000);
+  </script>
+</body>
+</html>
