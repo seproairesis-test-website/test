@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>SEP Habit Stopwatch</title>
-  <meta name="description" content="SEP habit tracker with offline stopwatch and local storage." />
+  <title>SEP Sessions & Detox</title>
+  <meta name="description" content="SEP sessions and detox tracker with local storage." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,13 +15,13 @@
     :root {
       --bg: #f5f5f2;
       --card: rgba(255,255,255,0.78);
-      --card-solid: #ffffff;
       --text: #111111;
       --muted: #6f6f6f;
-      --soft: #e8e8e3;
+      --soft: #efefeb;
       --line: rgba(0,0,0,0.08);
       --black: #111111;
       --white: #ffffff;
+      --danger: #9b1c1c;
       --radius-xl: 34px;
       --radius-lg: 24px;
       --shadow: 0 24px 80px rgba(0,0,0,0.08);
@@ -83,6 +83,7 @@
       gap: 12px;
       text-decoration: none;
       color: var(--text);
+      cursor: pointer;
     }
 
     .brand-mark {
@@ -114,21 +115,38 @@
       margin-top: 5px;
       color: var(--muted);
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
     }
 
-    .top-pill {
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .top-pill,
+    .back-btn {
       border: 1px solid var(--line);
-      background: rgba(255,255,255,0.55);
+      background: rgba(255,255,255,0.58);
       backdrop-filter: blur(18px);
       border-radius: 999px;
       padding: 10px 14px;
       font-size: 12px;
       color: var(--muted);
-      font-weight: 700;
+      font-weight: 800;
       white-space: nowrap;
+    }
+
+    .back-btn {
+      color: var(--text);
+      cursor: pointer;
+      display: none;
+    }
+
+    .back-btn.show {
+      display: inline-flex;
     }
 
     .hero {
@@ -138,7 +156,7 @@
     }
 
     .hero-card {
-      min-height: 260px;
+      min-height: 300px;
       border-radius: var(--radius-xl);
       background:
         linear-gradient(145deg, rgba(255,255,255,0.88), rgba(255,255,255,0.48)),
@@ -168,15 +186,15 @@
     .eyebrow {
       color: var(--muted);
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       margin-bottom: 18px;
     }
 
     h1 {
-      max-width: 800px;
-      font-size: clamp(44px, 10vw, 102px);
+      max-width: 880px;
+      font-size: clamp(48px, 10vw, 110px);
       line-height: 0.88;
       letter-spacing: -0.085em;
       font-weight: 900;
@@ -194,11 +212,11 @@
     }
 
     .hero-copy {
-      max-width: 540px;
+      max-width: 570px;
       color: var(--muted);
       font-size: 15px;
       line-height: 1.55;
-      font-weight: 520;
+      font-weight: 550;
     }
 
     .count-badge {
@@ -207,7 +225,7 @@
       border-radius: 999px;
       padding: 14px 18px;
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 850;
       box-shadow: var(--shadow-soft);
       white-space: nowrap;
     }
@@ -236,21 +254,31 @@
     .motivation span {
       color: var(--muted);
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 850;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       white-space: nowrap;
     }
 
-    .habits-grid {
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .choice-grid,
+    .cards-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 18px;
       margin-top: 26px;
     }
 
+    .choice-card,
     .add-card,
-    .habit-card {
+    .data-card {
       width: 100%;
       min-height: 300px;
       border-radius: var(--radius-xl);
@@ -263,6 +291,7 @@
       overflow: hidden;
     }
 
+    .choice-card,
     .add-card {
       display: grid;
       place-items: center;
@@ -270,18 +299,20 @@
       transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
     }
 
+    .choice-card:hover,
     .add-card:hover {
       transform: translateY(-3px);
-      background: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.92);
       box-shadow: 0 28px 90px rgba(0,0,0,0.1);
     }
 
+    .choice-inner,
     .add-inner {
       text-align: center;
-      max-width: 460px;
+      max-width: 520px;
     }
 
-    .plus {
+    .icon-circle {
       width: 76px;
       height: 76px;
       border-radius: 50%;
@@ -290,18 +321,20 @@
       display: grid;
       place-items: center;
       margin: 0 auto 22px;
-      font-size: 36px;
+      font-size: 34px;
       font-weight: 300;
       box-shadow: var(--shadow-soft);
     }
 
+    .choice-inner h2,
     .add-inner h2 {
-      font-size: clamp(34px, 6vw, 62px);
+      font-size: clamp(34px, 6vw, 68px);
       letter-spacing: -0.075em;
       line-height: 0.95;
       margin-bottom: 12px;
     }
 
+    .choice-inner p,
     .add-inner p {
       color: var(--muted);
       line-height: 1.55;
@@ -309,15 +342,15 @@
       font-weight: 550;
     }
 
-    .habit-top {
+    .data-top {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       gap: 18px;
-      margin-bottom: 30px;
+      margin-bottom: 26px;
     }
 
-    .habit-name {
+    .data-name {
       font-size: clamp(30px, 6vw, 58px);
       line-height: 0.95;
       letter-spacing: -0.075em;
@@ -337,17 +370,17 @@
       border: 1px solid var(--line);
     }
 
-    .status.running {
+    .status.dark {
       background: #111;
       color: #fff;
     }
 
-    .status.paused {
+    .status.light {
       background: #f3f3ef;
       color: #666;
     }
 
-    .time {
+    .big-time {
       font-variant-numeric: tabular-nums;
       font-size: clamp(44px, 11vw, 118px);
       line-height: 0.88;
@@ -375,7 +408,7 @@
       display: block;
       color: var(--muted);
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 850;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       margin-bottom: 8px;
@@ -446,7 +479,7 @@
 
     .btn-danger {
       background: #fff0f0;
-      color: #9b1c1c;
+      color: var(--danger);
       border: 1px solid rgba(155,28,28,0.14);
     }
 
@@ -456,7 +489,7 @@
       line-height: 1.5;
       margin-top: 16px;
       text-align: center;
-      font-weight: 600;
+      font-weight: 650;
     }
 
     .modal {
@@ -513,7 +546,8 @@
       text-transform: uppercase;
     }
 
-    input {
+    input,
+    select {
       width: 100%;
       border: 1px solid var(--line);
       background: #f6f6f2;
@@ -526,9 +560,16 @@
       outline: none;
     }
 
-    input:focus {
+    input:focus,
+    select:focus {
       border-color: rgba(0,0,0,0.26);
       background: #fff;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
     }
 
     .modal-actions {
@@ -546,6 +587,12 @@
       margin-top: 26px;
       text-align: center;
       font-weight: 550;
+    }
+
+    @media (min-width: 850px) {
+      .choice-grid {
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
     @media (max-width: 760px) {
@@ -571,20 +618,22 @@
         flex-direction: column;
       }
 
-      .stats {
+      .stats,
+      .row {
         grid-template-columns: 1fr;
       }
 
-      .habit-top {
+      .data-top {
         flex-direction: column;
       }
 
-      .time {
+      .big-time {
         font-size: clamp(48px, 17vw, 86px);
       }
 
+      .choice-card,
       .add-card,
-      .habit-card {
+      .data-card {
         min-height: 280px;
       }
 
@@ -599,385 +648,209 @@
 <body>
   <main class="page">
     <header>
-      <a class="brand" href="#">
+      <button class="brand" id="homeBtn" type="button">
         <div class="brand-mark">SEP</div>
         <div class="brand-text">
-          <strong>Habit Stopwatch</strong>
+          <strong>Make It Happen</strong>
           <span>Your Choice</span>
         </div>
-      </a>
+      </button>
 
-      <div class="top-pill" id="storageStatus">Saved locally on this device</div>
+      <div class="top-actions">
+        <button class="back-btn" id="backBtn" type="button">Back</button>
+        <div class="top-pill">Saved locally on this device</div>
+      </div>
     </header>
 
     <section class="hero">
       <div class="hero-card">
         <div>
-          <div class="eyebrow">Make It Happen</div>
-          <h1>Build the habit. Keep the time.</h1>
+          <div class="eyebrow" id="heroEyebrow">Make It Happen</div>
+          <h1 id="heroTitle">Choose your mode.</h1>
         </div>
 
         <div class="hero-bottom">
-          <p class="hero-copy">
-            Start a stopwatch for anything you want to improve. It keeps counting using saved start times, even if you close the tab or go offline.
+          <p class="hero-copy" id="heroCopy">
+            Track focused sessions or start a detox timer for something you want to quit. Everything saves locally and keeps working even when you close the page.
           </p>
 
-          <div class="count-badge" id="habitCount">0 / 10 habits</div>
+          <div class="count-badge" id="countBadge">Sessions or detox</div>
         </div>
       </div>
 
       <div class="motivation">
         <span>Today</span>
-        <p id="motivationText">One clean action repeated daily becomes proof.</p>
+        <p id="motivationText">One clean choice repeated daily becomes proof.</p>
       </div>
     </section>
 
-    <section class="habits-grid" id="habitsGrid">
-      <!-- Cards appear here -->
+    <section class="view active" id="homeView">
+      <div class="choice-grid">
+        <article class="choice-card" id="openSessions">
+          <div class="choice-inner">
+            <div class="icon-circle">+</div>
+            <h2>Sessions.</h2>
+            <p>Log study, workouts, football, business work or any focused block. Type the time manually. Max 100 cards.</p>
+          </div>
+        </article>
+
+        <article class="choice-card" id="openDetox">
+          <div class="choice-inner">
+            <div class="icon-circle">↻</div>
+            <h2>Detox.</h2>
+            <p>Track time away from sugar, smoking, drinking, scrolling or anything you want to quit. Timer keeps going offline.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="view" id="sessionsView">
+      <div class="cards-grid" id="sessionsGrid"></div>
+    </section>
+
+    <section class="view" id="detoxView">
+      <div class="cards-grid" id="detoxGrid"></div>
     </section>
 
     <p class="small-print">
-      Your habits are saved with local storage, so they stay on this device and browser.
+      This uses local storage, so your data stays on this browser and device.
     </p>
   </main>
 
-  <div class="modal" id="habitModal">
+  <div class="modal" id="sessionModal">
     <div class="modal-card">
-      <h2>Add habit.</h2>
-      <p>Name the habit, set a time goal, then start. You can have up to 10 habits at once.</p>
+      <h2>Add session.</h2>
+      <p>Type what you did and how long it took. This is for logged sessions, not a stopwatch.</p>
 
-      <form id="habitForm">
+      <form id="sessionForm">
         <div class="field">
-          <label for="habitName">Habit name</label>
-          <input id="habitName" type="text" placeholder="Example: Football training" maxlength="40" required />
+          <label for="sessionName">Session name</label>
+          <input id="sessionName" type="text" placeholder="Example: Football training" maxlength="50" required />
         </div>
 
-        <div class="field">
-          <label for="habitGoal">Goal in hours</label>
-          <input id="habitGoal" type="number" placeholder="Example: 10" min="1" max="10000" required />
+        <div class="row">
+          <div class="field">
+            <label for="sessionHours">Hours</label>
+            <input id="sessionHours" type="number" placeholder="1" min="0" max="999" />
+          </div>
+
+          <div class="field">
+            <label for="sessionMinutes">Minutes</label>
+            <input id="sessionMinutes" type="number" placeholder="30" min="0" max="59" />
+          </div>
         </div>
 
         <div class="modal-actions">
-          <button class="btn btn-light" type="button" id="cancelBtn">Cancel</button>
-          <button class="btn btn-dark" type="submit">Start habit</button>
+          <button class="btn btn-light" type="button" id="cancelSessionBtn">Cancel</button>
+          <button class="btn btn-dark" type="submit">Save session</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="detoxModal">
+    <div class="modal-card">
+      <h2>Add detox.</h2>
+      <p>Choose what you’re staying away from. The timer starts straight away and keeps counting even after refresh.</p>
+
+      <form id="detoxForm">
+        <div class="field">
+          <label for="detoxName">Detox name</label>
+          <input id="detoxName" type="text" placeholder="Example: Sugar" maxlength="50" required />
+        </div>
+
+        <div class="field">
+          <label for="detoxGoal">Goal in days</label>
+          <input id="detoxGoal" type="number" placeholder="Example: 30" min="1" max="10000" required />
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-light" type="button" id="cancelDetoxBtn">Cancel</button>
+          <button class="btn btn-dark" type="submit">Start detox</button>
         </div>
       </form>
     </div>
   </div>
 
   <script>
-    const STORAGE_KEY = "sep_habit_stopwatch_v1";
-    const MAX_HABITS = 10;
+    const STORAGE_SESSIONS = "sep_sessions_v1";
+    const STORAGE_DETOX = "sep_detox_v1";
 
-    const habitsGrid = document.getElementById("habitsGrid");
-    const habitCount = document.getElementById("habitCount");
-    const habitModal = document.getElementById("habitModal");
-    const habitForm = document.getElementById("habitForm");
-    const habitNameInput = document.getElementById("habitName");
-    const habitGoalInput = document.getElementById("habitGoal");
-    const cancelBtn = document.getElementById("cancelBtn");
+    const MAX_SESSIONS = 100;
+    const MAX_DETOX = 10;
+
+    const homeView = document.getElementById("homeView");
+    const sessionsView = document.getElementById("sessionsView");
+    const detoxView = document.getElementById("detoxView");
+
+    const homeBtn = document.getElementById("homeBtn");
+    const backBtn = document.getElementById("backBtn");
+
+    const openSessions = document.getElementById("openSessions");
+    const openDetox = document.getElementById("openDetox");
+
+    const heroEyebrow = document.getElementById("heroEyebrow");
+    const heroTitle = document.getElementById("heroTitle");
+    const heroCopy = document.getElementById("heroCopy");
+    const countBadge = document.getElementById("countBadge");
     const motivationText = document.getElementById("motivationText");
 
+    const sessionsGrid = document.getElementById("sessionsGrid");
+    const detoxGrid = document.getElementById("detoxGrid");
+
+    const sessionModal = document.getElementById("sessionModal");
+    const detoxModal = document.getElementById("detoxModal");
+
+    const sessionForm = document.getElementById("sessionForm");
+    const sessionNameInput = document.getElementById("sessionName");
+    const sessionHoursInput = document.getElementById("sessionHours");
+    const sessionMinutesInput = document.getElementById("sessionMinutes");
+    const cancelSessionBtn = document.getElementById("cancelSessionBtn");
+
+    const detoxForm = document.getElementById("detoxForm");
+    const detoxNameInput = document.getElementById("detoxName");
+    const detoxGoalInput = document.getElementById("detoxGoal");
+    const cancelDetoxBtn = document.getElementById("cancelDetoxBtn");
+
+    let currentView = "home";
+    let sessions = load(STORAGE_SESSIONS);
+    let detoxes = load(STORAGE_DETOX);
+
     const speeches = [
-      "You don’t need a perfect day. You need one honest minute, then another.",
-      "The habit becomes real when you do it on the boring days.",
-      "Small time still counts. Tiny progress is still progress.",
-      "Your future self is built by what you repeat, not what you announce.",
-      "Don’t restart from zero. Continue from proof.",
-      "Discipline is just remembering what you chose.",
-      "Every second you add is evidence that you didn’t quit.",
-      "Make it simple. Start again. Keep going.",
-      "A goal is not magic. It becomes real when you give it time.",
+      "One clean choice repeated daily becomes proof.",
+      "You don’t need a perfect streak. You need to continue.",
+      "The boring days are where the real change happens.",
+      "Small progress still counts. Keep stacking it.",
+      "Discipline is remembering what you chose.",
+      "Don’t wait for motivation. Make it easy to start.",
+      "Every logged session is evidence.",
+      "Every detox second is a vote for the person you want to become.",
+      "Make it simple. Track it. Repeat it.",
       "The cleanest flex is consistency.",
-      "You don’t have to feel motivated. You only have to press start.",
-      "One more session. One more small win. That’s how it grows.",
-      "Your choice becomes your identity when you repeat it enough.",
-      "Stop waiting for the perfect mood. Build the proof now.",
-      "The clock is not judging you. It’s recording your comeback."
+      "Your future self is watching what you do now.",
+      "One more good decision. That’s enough for today."
     ];
 
-    let habits = loadHabits();
-
-    function saveHabits() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(habits));
-    }
-
-    function loadHabits() {
+    function load(key) {
       try {
-        const saved = localStorage.getItem(STORAGE_KEY);
+        const saved = localStorage.getItem(key);
         return saved ? JSON.parse(saved) : [];
       } catch (error) {
-        console.error("Could not load habits:", error);
+        console.error(error);
         return [];
       }
     }
 
-    function makeId() {
-      return Date.now().toString(36) + Math.random().toString(36).slice(2);
+    function save(key, data) {
+      localStorage.setItem(key, JSON.stringify(data));
     }
 
     function now() {
       return Date.now();
     }
 
-    function getElapsedMs(habit) {
-      const savedTime = Number(habit.elapsedMs || 0);
-
-      if (!habit.isRunning || !habit.startedAt) {
-        return savedTime;
-      }
-
-      return savedTime + (now() - Number(habit.startedAt));
-    }
-
-    function formatTime(ms) {
-      const totalSeconds = Math.floor(ms / 1000);
-
-      const hours = Math.floor(totalSeconds / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
-
-      return [
-        String(hours).padStart(2, "0"),
-        String(minutes).padStart(2, "0"),
-        String(seconds).padStart(2, "0")
-      ].join(":");
-    }
-
-    function formatShortTime(ms) {
-      const totalMinutes = Math.floor(ms / 60000);
-      const hours = Math.floor(totalMinutes / 60);
-      const minutes = totalMinutes % 60;
-
-      if (hours <= 0 && minutes <= 0) return "Less than 1 min";
-      if (hours <= 0) return `${minutes} min`;
-      if (minutes <= 0) return `${hours} hr`;
-      return `${hours} hr ${minutes} min`;
-    }
-
-    function getProgressPercent(habit) {
-      const goalMs = Number(habit.goalHours) * 60 * 60 * 1000;
-      const elapsed = getElapsedMs(habit);
-
-      if (!goalMs || goalMs <= 0) return 0;
-
-      return Math.min(100, (elapsed / goalMs) * 100);
-    }
-
-    function setMotivation() {
-      const random = speeches[Math.floor(Math.random() * speeches.length)];
-      motivationText.textContent = random;
-    }
-
-    function openModal() {
-      if (habits.length >= MAX_HABITS) {
-        alert("You can only have 10 habits at a time. Delete one before adding another.");
-        return;
-      }
-
-      habitModal.classList.add("active");
-      habitNameInput.value = "";
-      habitGoalInput.value = "";
-      setTimeout(() => habitNameInput.focus(), 50);
-    }
-
-    function closeModal() {
-      habitModal.classList.remove("active");
-    }
-
-    function addHabit(name, goalHours) {
-      const cleanName = name.trim();
-      const cleanGoal = Number(goalHours);
-
-      if (!cleanName || !cleanGoal || cleanGoal <= 0) return;
-
-      if (habits.length >= MAX_HABITS) {
-        alert("You can only have 10 habits at a time.");
-        return;
-      }
-
-      const habit = {
-        id: makeId(),
-        name: cleanName,
-        goalHours: cleanGoal,
-        createdAt: now(),
-        startedAt: now(),
-        elapsedMs: 0,
-        isRunning: true
-      };
-
-      habits.unshift(habit);
-      saveHabits();
-      render();
-    }
-
-    function pauseHabit(id) {
-      habits = habits.map(habit => {
-        if (habit.id !== id) return habit;
-
-        const currentElapsed = getElapsedMs(habit);
-
-        return {
-          ...habit,
-          elapsedMs: currentElapsed,
-          startedAt: null,
-          isRunning: false
-        };
-      });
-
-      saveHabits();
-      render();
-    }
-
-    function resumeHabit(id) {
-      habits = habits.map(habit => {
-        if (habit.id !== id) return habit;
-
-        return {
-          ...habit,
-          startedAt: now(),
-          isRunning: true
-        };
-      });
-
-      saveHabits();
-      render();
-    }
-
-    function resetHabit(id) {
-      const confirmed = confirm("Reset this stopwatch back to zero?");
-
-      if (!confirmed) return;
-
-      habits = habits.map(habit => {
-        if (habit.id !== id) return habit;
-
-        return {
-          ...habit,
-          elapsedMs: 0,
-          startedAt: habit.isRunning ? now() : null
-        };
-      });
-
-      saveHabits();
-      render();
-    }
-
-    function deleteHabit(id) {
-      const confirmed = confirm("Delete this habit?");
-
-      if (!confirmed) return;
-
-      habits = habits.filter(habit => habit.id !== id);
-      saveHabits();
-      render();
-    }
-
-    function renderAddCard() {
-      const card = document.createElement("article");
-      card.className = "add-card";
-      card.innerHTML = `
-        <div class="add-inner">
-          <div class="plus">+</div>
-          <h2>Add habit.</h2>
-          <p>Create a stopwatch for a habit, goal, challenge, workout, study block or anything you want to track.</p>
-          ${habits.length >= MAX_HABITS ? `<p class="empty-note">Limit reached. Delete one habit to add another.</p>` : ""}
-        </div>
-      `;
-
-      card.addEventListener("click", openModal);
-      return card;
-    }
-
-    function renderHabitCard(habit) {
-      const elapsed = getElapsedMs(habit);
-      const progress = getProgressPercent(habit);
-      const goalMs = Number(habit.goalHours) * 60 * 60 * 1000;
-      const remaining = Math.max(0, goalMs - elapsed);
-
-      const card = document.createElement("article");
-      card.className = "habit-card";
-      card.dataset.id = habit.id;
-
-      card.innerHTML = `
-        <div class="habit-top">
-          <h2 class="habit-name">${escapeHtml(habit.name)}</h2>
-          <div class="status ${habit.isRunning ? "running" : "paused"}">
-            ${habit.isRunning ? "Running" : "Paused"}
-          </div>
-        </div>
-
-        <div class="time" data-time="${habit.id}">${formatTime(elapsed)}</div>
-
-        <div class="stats">
-          <div class="stat">
-            <span>Habit</span>
-            <strong>${escapeHtml(habit.name)}</strong>
-          </div>
-
-          <div class="stat">
-            <span>Goal</span>
-            <strong>${habit.goalHours} hour${Number(habit.goalHours) === 1 ? "" : "s"}</strong>
-          </div>
-
-          <div class="stat">
-            <span>Remaining</span>
-            <strong data-remaining="${habit.id}">${remaining <= 0 ? "Goal reached" : formatShortTime(remaining)}</strong>
-          </div>
-        </div>
-
-        <div class="progress-wrap">
-          <div class="progress" data-progress="${habit.id}" style="width: ${progress}%"></div>
-        </div>
-
-        <div class="controls">
-          ${
-            habit.isRunning
-              ? `<button class="btn btn-light" data-action="pause" data-id="${habit.id}">Pause</button>`
-              : `<button class="btn btn-dark" data-action="resume" data-id="${habit.id}">Resume</button>`
-          }
-
-          <button class="btn btn-light" data-action="reset" data-id="${habit.id}">Reset</button>
-          <button class="btn btn-danger" data-action="delete" data-id="${habit.id}">Delete</button>
-        </div>
-      `;
-
-      return card;
-    }
-
-    function render() {
-      habitsGrid.innerHTML = "";
-      habitCount.textContent = `${habits.length} / ${MAX_HABITS} habits`;
-
-      habitsGrid.appendChild(renderAddCard());
-
-      habits.forEach(habit => {
-        habitsGrid.appendChild(renderHabitCard(habit));
-      });
-
-      if (habits.length === 0) {
-        const note = document.createElement("p");
-        note.className = "empty-note";
-        note.textContent = "No habits yet. Add one and start building proof.";
-        habitsGrid.appendChild(note);
-      }
-    }
-
-    function updateLiveTimes() {
-      habits.forEach(habit => {
-        const elapsed = getElapsedMs(habit);
-        const goalMs = Number(habit.goalHours) * 60 * 60 * 1000;
-        const remaining = Math.max(0, goalMs - elapsed);
-        const progress = getProgressPercent(habit);
-
-        const timeEl = document.querySelector(`[data-time="${habit.id}"]`);
-        const remainingEl = document.querySelector(`[data-remaining="${habit.id}"]`);
-        const progressEl = document.querySelector(`[data-progress="${habit.id}"]`);
-
-        if (timeEl) timeEl.textContent = formatTime(elapsed);
-        if (remainingEl) remainingEl.textContent = remaining <= 0 ? "Goal reached" : formatShortTime(remaining);
-        if (progressEl) progressEl.style.width = `${progress}%`;
-      });
+    function makeId() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2);
     }
 
     function escapeHtml(text) {
@@ -986,45 +859,493 @@
       return div.innerHTML;
     }
 
-    habitForm.addEventListener("submit", function(event) {
-      event.preventDefault();
+    function setMotivation() {
+      motivationText.textContent = speeches[Math.floor(Math.random() * speeches.length)];
+    }
 
-      addHabit(habitNameInput.value, habitGoalInput.value);
-      closeModal();
+    function showView(view) {
+      currentView = view;
+
+      homeView.classList.toggle("active", view === "home");
+      sessionsView.classList.toggle("active", view === "sessions");
+      detoxView.classList.toggle("active", view === "detox");
+
+      backBtn.classList.toggle("show", view !== "home");
+
+      if (view === "home") {
+        heroEyebrow.textContent = "Make It Happen";
+        heroTitle.textContent = "Choose your mode.";
+        heroCopy.textContent = "Track focused sessions or start a detox timer for something you want to quit. Everything saves locally and keeps working even when you close the page.";
+        countBadge.textContent = "Sessions or detox";
+      }
+
+      if (view === "sessions") {
+        heroEyebrow.textContent = "Sessions";
+        heroTitle.textContent = "Log the work.";
+        heroCopy.textContent = "Add focused sessions manually. Great for study, football, workouts, business work or anything you want to measure.";
+        countBadge.textContent = `${sessions.length} / ${MAX_SESSIONS} sessions`;
+      }
+
+      if (view === "detox") {
+        heroEyebrow.textContent = "Detox";
+        heroTitle.textContent = "Stay clean from it.";
+        heroCopy.textContent = "Start a timer for something you want to stop doing. The timer keeps counting using saved timestamps, even offline.";
+        countBadge.textContent = `${detoxes.length} / ${MAX_DETOX} detoxes`;
+      }
+
+      render();
+    }
+
+    function formatDuration(ms) {
+      const totalSeconds = Math.floor(ms / 1000);
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      if (days > 0) {
+        return `${days}d ${String(hours).padStart(2, "0")}h ${String(minutes).padStart(2, "0")}m`;
+      }
+
+      return [
+        String(hours).padStart(2, "0"),
+        String(minutes).padStart(2, "0"),
+        String(seconds).padStart(2, "0")
+      ].join(":");
+    }
+
+    function formatSessionMinutes(totalMinutes) {
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+
+      if (hours <= 0 && minutes <= 0) return "0 min";
+      if (hours <= 0) return `${minutes} min`;
+      if (minutes <= 0) return `${hours} hr`;
+      return `${hours} hr ${minutes} min`;
+    }
+
+    function totalSessionMinutes() {
+      return sessions.reduce((sum, session) => sum + Number(session.minutes || 0), 0);
+    }
+
+    function getDetoxElapsed(detox) {
+      return now() - Number(detox.startedAt);
+    }
+
+    function getDetoxProgress(detox) {
+      const goalMs = Number(detox.goalDays) * 24 * 60 * 60 * 1000;
+      const elapsed = getDetoxElapsed(detox);
+
+      if (!goalMs || goalMs <= 0) return 0;
+
+      return Math.min(100, (elapsed / goalMs) * 100);
+    }
+
+    function openSessionModal() {
+      if (sessions.length >= MAX_SESSIONS) {
+        alert("You can only have 100 sessions. Delete one before adding another.");
+        return;
+      }
+
+      sessionModal.classList.add("active");
+      sessionNameInput.value = "";
+      sessionHoursInput.value = "";
+      sessionMinutesInput.value = "";
+      setTimeout(() => sessionNameInput.focus(), 50);
+    }
+
+    function openDetoxModal() {
+      if (detoxes.length >= MAX_DETOX) {
+        alert("You can only have 10 detox cards. Delete one before adding another.");
+        return;
+      }
+
+      detoxModal.classList.add("active");
+      detoxNameInput.value = "";
+      detoxGoalInput.value = "";
+      setTimeout(() => detoxNameInput.focus(), 50);
+    }
+
+    function closeModals() {
+      sessionModal.classList.remove("active");
+      detoxModal.classList.remove("active");
+    }
+
+    function addSession(name, hours, minutes) {
+      const cleanName = name.trim();
+      const cleanHours = Number(hours || 0);
+      const cleanMinutes = Number(minutes || 0);
+      const totalMinutes = cleanHours * 60 + cleanMinutes;
+
+      if (!cleanName) return;
+
+      if (totalMinutes <= 0) {
+        alert("Add at least 1 minute.");
+        return;
+      }
+
+      if (sessions.length >= MAX_SESSIONS) {
+        alert("You can only have 100 sessions.");
+        return;
+      }
+
+      sessions.unshift({
+        id: makeId(),
+        name: cleanName,
+        minutes: totalMinutes,
+        createdAt: now()
+      });
+
+      save(STORAGE_SESSIONS, sessions);
+      closeModals();
+      render();
+    }
+
+    function deleteSession(id) {
+      if (!confirm("Delete this session?")) return;
+
+      sessions = sessions.filter(session => session.id !== id);
+      save(STORAGE_SESSIONS, sessions);
+      render();
+    }
+
+    function clearSessions() {
+      if (!sessions.length) return;
+      if (!confirm("Delete all sessions?")) return;
+
+      sessions = [];
+      save(STORAGE_SESSIONS, sessions);
+      render();
+    }
+
+    function addDetox(name, goalDays) {
+      const cleanName = name.trim();
+      const cleanGoal = Number(goalDays);
+
+      if (!cleanName || !cleanGoal || cleanGoal <= 0) return;
+
+      if (detoxes.length >= MAX_DETOX) {
+        alert("You can only have 10 detox cards.");
+        return;
+      }
+
+      detoxes.unshift({
+        id: makeId(),
+        name: cleanName,
+        goalDays: cleanGoal,
+        startedAt: now()
+      });
+
+      save(STORAGE_DETOX, detoxes);
+      closeModals();
+      render();
+    }
+
+    function resetDetox(id) {
+      if (!confirm("Reset this detox timer back to zero?")) return;
+
+      detoxes = detoxes.map(detox => {
+        if (detox.id !== id) return detox;
+        return {
+          ...detox,
+          startedAt: now()
+        };
+      });
+
+      save(STORAGE_DETOX, detoxes);
+      render();
+    }
+
+    function deleteDetox(id) {
+      if (!confirm("Delete this detox?")) return;
+
+      detoxes = detoxes.filter(detox => detox.id !== id);
+      save(STORAGE_DETOX, detoxes);
+      render();
+    }
+
+    function renderSessionAddCard() {
+      const card = document.createElement("article");
+      card.className = "add-card";
+
+      card.innerHTML = `
+        <div class="add-inner">
+          <div class="icon-circle">+</div>
+          <h2>Add session.</h2>
+          <p>Type the activity and how much time you spent. Max 100 cards.</p>
+          ${sessions.length >= MAX_SESSIONS ? `<p class="empty-note">Limit reached. Delete one session to add another.</p>` : ""}
+        </div>
+      `;
+
+      card.addEventListener("click", openSessionModal);
+      return card;
+    }
+
+    function renderDetoxAddCard() {
+      const card = document.createElement("article");
+      card.className = "add-card";
+
+      card.innerHTML = `
+        <div class="add-inner">
+          <div class="icon-circle">+</div>
+          <h2>Add detox.</h2>
+          <p>Start a timer for sugar, smoking, drinking, scrolling or anything you want to stop.</p>
+          ${detoxes.length >= MAX_DETOX ? `<p class="empty-note">Limit reached. Delete one detox to add another.</p>` : ""}
+        </div>
+      `;
+
+      card.addEventListener("click", openDetoxModal);
+      return card;
+    }
+
+    function renderSessionCard(session) {
+      const card = document.createElement("article");
+      card.className = "data-card";
+
+      const date = new Date(session.createdAt).toLocaleDateString(undefined, {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
+
+      card.innerHTML = `
+        <div class="data-top">
+          <h2 class="data-name">${escapeHtml(session.name)}</h2>
+          <div class="status light">Logged</div>
+        </div>
+
+        <div class="big-time">${formatSessionMinutes(Number(session.minutes || 0))}</div>
+
+        <div class="stats">
+          <div class="stat">
+            <span>Session</span>
+            <strong>${escapeHtml(session.name)}</strong>
+          </div>
+
+          <div class="stat">
+            <span>Time</span>
+            <strong>${formatSessionMinutes(Number(session.minutes || 0))}</strong>
+          </div>
+
+          <div class="stat">
+            <span>Date</span>
+            <strong>${date}</strong>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-danger" data-action="delete-session" data-id="${session.id}">Delete</button>
+        </div>
+      `;
+
+      return card;
+    }
+
+    function renderDetoxCard(detox) {
+      const elapsed = getDetoxElapsed(detox);
+      const progress = getDetoxProgress(detox);
+      const goalMs = Number(detox.goalDays) * 24 * 60 * 60 * 1000;
+      const remaining = Math.max(0, goalMs - elapsed);
+
+      const card = document.createElement("article");
+      card.className = "data-card";
+
+      card.innerHTML = `
+        <div class="data-top">
+          <h2 class="data-name">${escapeHtml(detox.name)}</h2>
+          <div class="status dark">Active</div>
+        </div>
+
+        <div class="big-time" data-detox-time="${detox.id}">${formatDuration(elapsed)}</div>
+
+        <div class="stats">
+          <div class="stat">
+            <span>Detox</span>
+            <strong>${escapeHtml(detox.name)}</strong>
+          </div>
+
+          <div class="stat">
+            <span>Goal</span>
+            <strong>${detox.goalDays} day${Number(detox.goalDays) === 1 ? "" : "s"}</strong>
+          </div>
+
+          <div class="stat">
+            <span>Remaining</span>
+            <strong data-detox-remaining="${detox.id}">${remaining <= 0 ? "Goal reached" : formatDuration(remaining)}</strong>
+          </div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress" data-detox-progress="${detox.id}" style="width: ${progress}%"></div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-light" data-action="reset-detox" data-id="${detox.id}">Reset</button>
+          <button class="btn btn-danger" data-action="delete-detox" data-id="${detox.id}">Delete</button>
+        </div>
+      `;
+
+      return card;
+    }
+
+    function renderSessions() {
+      sessionsGrid.innerHTML = "";
+      sessionsGrid.appendChild(renderSessionAddCard());
+
+      if (sessions.length > 0) {
+        const summary = document.createElement("article");
+        summary.className = "data-card";
+
+        summary.innerHTML = `
+          <div class="data-top">
+            <h2 class="data-name">Total sessions.</h2>
+            <div class="status dark">${sessions.length} / ${MAX_SESSIONS}</div>
+          </div>
+
+          <div class="big-time">${formatSessionMinutes(totalSessionMinutes())}</div>
+
+          <div class="stats">
+            <div class="stat">
+              <span>Cards</span>
+              <strong>${sessions.length}</strong>
+            </div>
+
+            <div class="stat">
+              <span>Total time</span>
+              <strong>${formatSessionMinutes(totalSessionMinutes())}</strong>
+            </div>
+
+            <div class="stat">
+              <span>Average</span>
+              <strong>${formatSessionMinutes(Math.round(totalSessionMinutes() / sessions.length))}</strong>
+            </div>
+          </div>
+
+          <div class="controls">
+            <button class="btn btn-danger" id="clearSessionsBtn">Clear all</button>
+          </div>
+        `;
+
+        sessionsGrid.appendChild(summary);
+      }
+
+      sessions.forEach(session => {
+        sessionsGrid.appendChild(renderSessionCard(session));
+      });
+
+      if (sessions.length === 0) {
+        const note = document.createElement("p");
+        note.className = "empty-note";
+        note.textContent = "No sessions yet. Add one and start stacking proof.";
+        sessionsGrid.appendChild(note);
+      }
+
+      countBadge.textContent = `${sessions.length} / ${MAX_SESSIONS} sessions`;
+    }
+
+    function renderDetoxes() {
+      detoxGrid.innerHTML = "";
+      detoxGrid.appendChild(renderDetoxAddCard());
+
+      detoxes.forEach(detox => {
+        detoxGrid.appendChild(renderDetoxCard(detox));
+      });
+
+      if (detoxes.length === 0) {
+        const note = document.createElement("p");
+        note.className = "empty-note";
+        note.textContent = "No detoxes yet. Add one and the timer starts.";
+        detoxGrid.appendChild(note);
+      }
+
+      countBadge.textContent = `${detoxes.length} / ${MAX_DETOX} detoxes`;
+    }
+
+    function render() {
+      if (currentView === "sessions") renderSessions();
+      if (currentView === "detox") renderDetoxes();
+      if (currentView === "home") countBadge.textContent = "Sessions or detox";
+    }
+
+    function updateLiveDetox() {
+      detoxes.forEach(detox => {
+        const elapsed = getDetoxElapsed(detox);
+        const progress = getDetoxProgress(detox);
+        const goalMs = Number(detox.goalDays) * 24 * 60 * 60 * 1000;
+        const remaining = Math.max(0, goalMs - elapsed);
+
+        const timeEl = document.querySelector(`[data-detox-time="${detox.id}"]`);
+        const remainingEl = document.querySelector(`[data-detox-remaining="${detox.id}"]`);
+        const progressEl = document.querySelector(`[data-detox-progress="${detox.id}"]`);
+
+        if (timeEl) timeEl.textContent = formatDuration(elapsed);
+        if (remainingEl) remainingEl.textContent = remaining <= 0 ? "Goal reached" : formatDuration(remaining);
+        if (progressEl) progressEl.style.width = `${progress}%`;
+      });
+    }
+
+    openSessions.addEventListener("click", () => showView("sessions"));
+    openDetox.addEventListener("click", () => showView("detox"));
+    homeBtn.addEventListener("click", () => showView("home"));
+    backBtn.addEventListener("click", () => showView("home"));
+
+    sessionForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+      addSession(sessionNameInput.value, sessionHoursInput.value, sessionMinutesInput.value);
     });
 
-    cancelBtn.addEventListener("click", closeModal);
+    detoxForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+      addDetox(detoxNameInput.value, detoxGoalInput.value);
+    });
 
-    habitModal.addEventListener("click", function(event) {
-      if (event.target === habitModal) {
-        closeModal();
-      }
+    cancelSessionBtn.addEventListener("click", closeModals);
+    cancelDetoxBtn.addEventListener("click", closeModals);
+
+    sessionModal.addEventListener("click", function(event) {
+      if (event.target === sessionModal) closeModals();
+    });
+
+    detoxModal.addEventListener("click", function(event) {
+      if (event.target === detoxModal) closeModals();
     });
 
     document.addEventListener("keydown", function(event) {
-      if (event.key === "Escape") {
-        closeModal();
-      }
+      if (event.key === "Escape") closeModals();
     });
 
-    habitsGrid.addEventListener("click", function(event) {
+    sessionsGrid.addEventListener("click", function(event) {
+      const clearBtn = event.target.closest("#clearSessionsBtn");
+      if (clearBtn) {
+        clearSessions();
+        return;
+      }
+
       const button = event.target.closest("button[data-action]");
       if (!button) return;
 
-      const action = button.dataset.action;
-      const id = button.dataset.id;
+      if (button.dataset.action === "delete-session") {
+        deleteSession(button.dataset.id);
+      }
+    });
 
-      if (action === "pause") pauseHabit(id);
-      if (action === "resume") resumeHabit(id);
-      if (action === "reset") resetHabit(id);
-      if (action === "delete") deleteHabit(id);
+    detoxGrid.addEventListener("click", function(event) {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+
+      if (button.dataset.action === "reset-detox") {
+        resetDetox(button.dataset.id);
+      }
+
+      if (button.dataset.action === "delete-detox") {
+        deleteDetox(button.dataset.id);
+      }
     });
 
     setMotivation();
-    render();
-    updateLiveTimes();
-
-    setInterval(updateLiveTimes, 1000);
+    showView("home");
+    updateLiveDetox();
+    setInterval(updateLiveDetox, 1000);
   </script>
 </body>
 </html>
