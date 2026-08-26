@@ -1,1 +1,2943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>SEP</title>
+
+  <meta
+    name="description"
+    content="SEP clothing, designed and pressed in Copenhagen."
+  >
+
+  <link
+    rel="icon"
+    href="https://upload.wikimedia.org/wikipedia/commons/3/3f/Black_square.jpg"
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;700&family=Noto+Sans+Armenian:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+KR:wght@400;700&family=Noto+Sans+SC:wght@400;700&family=Noto+Sans+Thai:wght@400;700&family=PT+Mono&family=Zalando+Sans+SemiExpanded:ital,wght@0,200..900;1,200..900&display=swap"
+    rel="stylesheet"
+  >
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: #000;
+      color: #fff;
+      font-family: "Zalando Sans SemiExpanded", "Inter", sans-serif;
+      transition:
+        background-color 0.25s ease,
+        color 0.25s ease;
+    }
+
+    body.light-theme {
+      background: #fff;
+      color: #000;
+    }
+
+    button,
+    a,
+    input,
+    select {
+      transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease,
+        opacity 0.25s ease;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:hover,
+    a:hover {
+      transform: translateY(-2px);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .pointer-none {
+      pointer-events: none !important;
+    }
+
+    .pointer-auto {
+      pointer-events: auto !important;
+    }
+
+    .fade-section {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .app-control-btn {
+      min-width: 42px;
+      height: 42px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 9999px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .popup {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      padding: 10px 16px;
+      border-radius: 8px;
+      background: #16a34a;
+      color: #fff;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .popup.show {
+      opacity: 1;
+    }
+
+    /* Permanent top-left SEP logo */
+
+    #fixedSepLogo {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 80;
+      width: 58px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    #fixedSepLogo img {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+      object-fit: contain;
+    }
+
+    .sep-logo-dark {
+      display: block;
+    }
+
+    .sep-logo-light {
+      display: none !important;
+    }
+
+    body.light-theme .sep-logo-dark {
+      display: none !important;
+    }
+
+    body.light-theme .sep-logo-light {
+      display: block !important;
+    }
+
+    /* Welcome screen */
+
+    #welcome-screen {
+      position: relative;
+      min-height: 100vh;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #222, #000);
+      color: #fff;
+      text-align: center;
+    }
+
+    #welcomeTopControls {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 5;
+      display: flex;
+      gap: 8px;
+    }
+
+    #welcomeTitle {
+      width: min(340px, 92vw);
+      height: 92px;
+      margin: 0 auto 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      white-space: nowrap;
+      color: #f5f5f5;
+      line-height: 1;
+      text-align: center;
+      contain: layout paint;
+      backface-visibility: hidden;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+      font-kerning: none;
+      transition: none !important;
+      transform: none !important;
+    }
+
+    #welcomeTitle:hover {
+      transform: none !important;
+    }
+
+    #welcomeSubtitle {
+      max-width: 560px;
+      margin: 0 0 2rem;
+      color: #e6e6e6;
+      line-height: 1.5;
+    }
+
+    #welcome-screen .welcome-btn {
+      border: none;
+      background: #fff;
+      color: #000;
+      font-weight: 600;
+    }
+
+    .welcome-logo-btn {
+      width: 92px;
+      height: 92px;
+      min-width: 92px;
+      min-height: 92px;
+      padding: 18px !important;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 50% !important;
+    }
+
+    .welcome-logo-btn img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+    }
+
+    #welcome-lang-row {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    #welcome-lang-row button {
+      padding: 6px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 9999px;
+      background: transparent;
+      color: #fff;
+      font-size: 12px;
+    }
+
+    #welcome-lang-row button.active {
+      border-color: #fff;
+      background: #fff;
+      color: #000;
+    }
+
+    /* Shop */
+
+    #sep-app,
+    #sep-scene-main {
+      min-height: 100vh;
+      background: #000;
+      color: #fff;
+    }
+
+    #sepTopControls {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Products */
+
+    .product-grid {
+      align-items: start;
+    }
+
+    .product-card {
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.045);
+      text-align: center;
+      box-shadow: none;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      transition:
+        transform 0.22s ease,
+        border-color 0.22s ease,
+        background-color 0.22s ease;
+    }
+
+    .product-card:hover {
+      border-color: rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.06);
+      transform: translateY(-3px);
+    }
+
+    .product-image-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      margin-bottom: 18px;
+      padding: 0;
+      overflow: hidden;
+      border: none;
+      border-radius: 26px;
+      background: #111;
+    }
+
+    .product-main-image-btn {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      display: block;
+      overflow: hidden;
+      border: none;
+      border-radius: 26px;
+      background: transparent;
+      cursor: zoom-in;
+    }
+
+    .product-main-image-btn:hover {
+      transform: none;
+    }
+
+    .carousel-img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 26px;
+      object-fit: cover;
+      user-select: none;
+      -webkit-user-drag: none;
+      transition: transform 0.45s ease;
+    }
+
+    .product-card:hover .carousel-img {
+      transform: scale(1.018);
+    }
+
+    .carousel-arrow {
+      position: absolute;
+      top: 50%;
+      z-index: 3;
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 9999px;
+      background: rgba(0, 0, 0, 0.28);
+      color: #fff;
+      opacity: 0;
+      transform: translateY(-50%);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .carousel-arrow:hover {
+      background: rgba(0, 0, 0, 0.46);
+      transform: translateY(-50%);
+    }
+
+    .product-card:hover .carousel-arrow {
+      opacity: 1;
+    }
+
+    .carousel-arrow.left {
+      left: 12px;
+    }
+
+    .carousel-arrow.right {
+      right: 12px;
+    }
+
+    .carousel-dots {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      z-index: 3;
+      padding: 5px 8px;
+      display: flex;
+      gap: 6px;
+      border-radius: 9999px;
+      background: rgba(0, 0, 0, 0.22);
+      transform: translateX(-50%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .carousel-dot {
+      width: 5px;
+      height: 5px;
+      display: block;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.42);
+    }
+
+    .carousel-dot.active {
+      background: #fff;
+    }
+
+    .product-card h3 {
+      margin-bottom: 6px;
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    .product-price {
+      margin-bottom: 14px;
+      color: #fff;
+      font-size: 0.95rem;
+      opacity: 0.72;
+    }
+
+    .product-card select,
+    .product-card input {
+      height: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.035);
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .size-selector {
+      margin-bottom: 8px;
+      padding: 0 14px;
+    }
+
+    .quantity-selector {
+      width: 56px;
+      padding: 0 8px;
+      text-align: center;
+    }
+
+    .add-to-cart {
+      height: 40px;
+      padding: 0 18px;
+      border: none;
+      border-radius: 9999px;
+      background: #fff;
+      color: #000;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* Image modal */
+
+    #imageModal {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      padding: 20px;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.92);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .image-modal-frame {
+      width: min(92vw, 760px);
+      height: min(82vh, 760px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 30px;
+      background: #0b0b0b;
+      box-shadow: 0 30px 100px rgba(0, 0, 0, 0.55);
+    }
+
+    .image-modal-img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 30px;
+      object-fit: contain;
+    }
+
+    #imageModalClose,
+    .image-modal-arrow {
+      position: absolute;
+      z-index: 95;
+      width: 46px;
+      height: 46px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    #imageModalClose {
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+    }
+
+    .image-modal-arrow {
+      top: 50%;
+      font-size: 30px;
+      transform: translateY(-50%);
+    }
+
+    .image-modal-arrow:hover {
+      background: rgba(255, 255, 255, 0.16);
+      transform: translateY(-50%);
+    }
+
+    .image-modal-left {
+      left: 20px;
+    }
+
+    .image-modal-right {
+      right: 20px;
+    }
+
+    /* Cart */
+
+    #cartSidebar {
+      color: #000;
+      will-change: transform;
+    }
+
+    .cph-toggle {
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 9999px;
+      background: #fff;
+      color: #000;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .cph-toggle.active {
+      border-color: #000;
+      background: #000;
+      color: #fff;
+    }
+
+    .social-icon {
+      width: 20px;
+      height: 20px;
+      display: block;
+      fill: currentColor;
+    }
+
+    /* Light theme */
+
+    body.light-theme #welcome-screen {
+      background: #fff;
+      color: #000;
+    }
+
+    body.light-theme #welcomeTitle,
+    body.light-theme #welcomeSubtitle {
+      color: #000;
+    }
+
+    body.light-theme #welcome-screen .welcome-btn {
+      border: 1px solid #000;
+      background: #000;
+      color: #fff;
+    }
+
+    body.light-theme #welcome-lang-row button {
+      border-color: rgba(0, 0, 0, 0.25);
+      background: #fff;
+      color: #000;
+    }
+
+    body.light-theme #welcome-lang-row button.active {
+      border-color: #000;
+      background: #000;
+      color: #fff;
+    }
+
+    body.light-theme #sep-app,
+    body.light-theme #sep-scene-main {
+      background: #fff;
+      color: #000;
+    }
+
+    body.light-theme .app-control-btn {
+      border-color: #ddd;
+      background: #fff;
+      color: #000;
+    }
+
+    body.light-theme #sep-app h1,
+    body.light-theme #sep-app h2,
+    body.light-theme #sep-app h3,
+    body.light-theme #sep-app p,
+    body.light-theme #sep-app span,
+    body.light-theme #sep-app label {
+      color: #000;
+    }
+
+    body.light-theme #btnShopNow,
+    body.light-theme .add-to-cart,
+    body.light-theme #clearCartBtn {
+      border-color: #000;
+      background: #000;
+      color: #fff !important;
+    }
+
+    body.light-theme #viewCartBtn,
+    body.light-theme #copyMobilePay {
+      border: 1px solid #000;
+      background: #fff;
+      color: #000;
+    }
+
+    body.light-theme #openMobilePay {
+      background: #16a34a;
+      color: #fff;
+    }
+
+    body.light-theme #cartSidebar {
+      background: #fff;
+      color: #000;
+    }
+
+    body.light-theme .product-card {
+      border-color: rgba(0, 0, 0, 0.07);
+      background: rgba(0, 0, 0, 0.025);
+    }
+
+    body.light-theme .product-card:hover {
+      border-color: rgba(0, 0, 0, 0.12);
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    body.light-theme .product-image-frame {
+      background: #f5f5f3;
+    }
+
+    body.light-theme .product-card select,
+    body.light-theme .product-card input {
+      border-color: #ddd;
+      background: #fff;
+      color: #000;
+    }
+
+    body.light-theme #imageModal {
+      background: rgba(246, 246, 244, 0.92);
+    }
+
+    body.light-theme .image-modal-frame {
+      background: #f6f6f4;
+      box-shadow: 0 30px 100px rgba(0, 0, 0, 0.14);
+    }
+
+    body.light-theme #imageModalClose,
+    body.light-theme .image-modal-arrow {
+      border-color: rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.72);
+      color: #000;
+    }
+
+    body.light-theme .carousel-arrow {
+      border-color: rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.72);
+      color: #000;
+    }
+
+    body.light-theme .carousel-dots {
+      background: rgba(255, 255, 255, 0.62);
+    }
+
+    body.light-theme .carousel-dot {
+      background: rgba(0, 0, 0, 0.24);
+    }
+
+    body.light-theme .carousel-dot.active {
+      background: #000;
+    }
+
+    body.light-theme .cph-toggle {
+      border-color: #ddd;
+      background: #fff;
+      color: #000;
+    }
+
+    body.light-theme .cph-toggle.active {
+      border-color: #000;
+      background: #000;
+      color: #fff;
+    }
+
+    body.light-theme a[href*="instagram.com/se_proairesis"] {
+      background: linear-gradient(to bottom right, #ec4899, #9333ea);
+      color: #fff !important;
+    }
+
+    body.light-theme a[href*="tiktok.com/@se_proairesis"] {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: #000;
+      color: #fff !important;
+    }
+
+    @media (max-width: 640px) {
+      #fixedSepLogo {
+        top: 12px;
+        left: 12px;
+        width: 52px;
+        height: 38px;
+      }
+
+      #welcomeTopControls,
+      #sepTopControls {
+        top: 12px;
+        right: 12px;
+      }
+
+      .carousel-arrow {
+        opacity: 1;
+      }
+
+      .image-modal-left {
+        left: 8px;
+      }
+
+      .image-modal-right {
+        right: 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="fixedSepLogo" aria-hidden="true">
+    <img
+      class="sep-logo-dark"
+      src="images/sep-logo-white.png"
+      alt=""
+    >
+
+    <img
+      class="sep-logo-light"
+      src="images/sep-logo-black.png"
+      alt=""
+    >
+  </div>
+
+  <section id="welcome-screen">
+    <div id="welcomeTopControls">
+      <button
+        id="welcomeThemeToggle"
+        class="app-control-btn"
+        type="button"
+        aria-label="Toggle theme"
+      >
+        ◐
+      </button>
+    </div>
+
+    <h1 id="welcomeTitle">SEP</h1>
+
+    <p id="welcomeSubtitle">
+      Your Choice.
+    </p>
+
+    <button
+      class="welcome-btn welcome-logo-btn"
+      id="welcomeSepBtn"
+      type="button"
+      aria-label="Enter SEP shop"
+    >
+      <img
+        class="sep-logo-dark"
+        src="images/sep-logo-black.png"
+        alt="SEP"
+      >
+
+      <img
+        class="sep-logo-light"
+        src="images/sep-logo-white.png"
+        alt="SEP"
+      >
+    </button>
+
+    <div id="welcome-lang-row">
+      <button
+        type="button"
+        class="welcome-lang-btn"
+        data-lang="en"
+      >
+        English
+      </button>
+
+      <button
+        type="button"
+        class="welcome-lang-btn"
+        data-lang="da"
+      >
+        Dansk
+      </button>
+
+      <button
+        type="button"
+        class="welcome-lang-btn"
+        data-lang="cs"
+      >
+        Čeština
+      </button>
+    </div>
+  </section>
+
+  <div id="sep-app" class="hidden">
+    <div id="sepTopControls">
+      <button
+        id="sepThemeToggle"
+        class="app-control-btn"
+        type="button"
+        aria-label="Toggle theme"
+      >
+        ◐
+      </button>
+
+      <button
+        id="sepTopExit"
+        class="app-control-btn"
+        type="button"
+      >
+        Exit
+      </button>
+    </div>
+
+    <main id="sep-scene-main">
+      <header class="fade-section py-20 text-center">
+        <h1
+          id="heroTitle"
+          class="mb-4 text-5xl font-bold text-white"
+        >
+          Clothes chosen for you.
+        </h1>
+
+        <p
+          id="heroSubtitle"
+          class="mb-8 text-lg text-white"
+        >
+          Your choice.
+        </p>
+
+        <div class="flex justify-center gap-4">
+          <a
+            id="btnShopNow"
+            href="#products"
+            class="rounded-full bg-white px-6 py-3 font-medium text-black"
+          >
+            Shop Now
+          </a>
+
+          <button
+            id="viewCartBtn"
+            class="relative rounded-full border border-white px-6 py-3 font-medium text-white"
+            type="button"
+          >
+            <span id="btnViewCart">
+              View Cart
+            </span>
+
+            <span
+              id="cartCounter"
+              class="absolute -right-2 -top-2 hidden flex h-6 w-6 items-center justify-center rounded-full bg-red-600 text-xs text-white"
+            >
+              0
+            </span>
+          </button>
+        </div>
+      </header>
+
+      <section
+        id="products"
+        class="fade-section px-6 py-20"
+      >
+        <div class="mb-12 text-center">
+          <h2
+            id="productsTitle"
+            class="mb-4 text-4xl font-semibold tracking-tight text-white md:text-5xl"
+          >
+            The collection.
+          </h2>
+
+          <p
+            id="productsSubtitle"
+            class="mx-auto max-w-xl text-white/70"
+          >
+            Soft everyday pieces, pressed in Copenhagen.
+          </p>
+        </div>
+
+        <div
+          class="product-grid mx-auto grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2 md:gap-8"
+        >
+          <article
+            class="product-card"
+            data-product-id="product1"
+            data-product-color="white"
+          >
+            <div class="product-image-frame">
+              <button
+                class="product-main-image-btn"
+                type="button"
+                data-open-image="product1"
+                aria-label="Enlarge SEP White T-shirt image"
+              >
+                <img
+                  id="product1Image"
+                  src="images/white-tshirt-front.jpg"
+                  class="carousel-img"
+                  alt="SEP White T-shirt"
+                >
+              </button>
+
+              <button
+                class="carousel-arrow left"
+                type="button"
+                data-previous-image="product1"
+                aria-label="Previous image"
+              >
+                ‹
+              </button>
+
+              <button
+                class="carousel-arrow right"
+                type="button"
+                data-next-image="product1"
+                aria-label="Next image"
+              >
+                ›
+              </button>
+
+              <div
+                class="carousel-dots"
+                id="product1Dots"
+              ></div>
+            </div>
+
+            <h3 id="product1Name">
+              SEP White T-shirt
+            </h3>
+
+            <p
+              class="product-price"
+              data-price="180"
+            >
+              180 DKK
+            </p>
+
+            <select
+              class="size-selector"
+              aria-label="Size"
+            >
+              <option>XS</option>
+              <option>S</option>
+              <option>M</option>
+              <option>L</option>
+              <option>XL</option>
+            </select>
+
+            <div class="flex justify-center gap-2">
+              <input
+                class="quantity-selector"
+                type="number"
+                min="1"
+                max="99"
+                value="1"
+                aria-label="Quantity"
+              >
+
+              <button
+                class="add-to-cart"
+                type="button"
+                data-product-id="product1"
+              >
+                Add
+              </button>
+            </div>
+          </article>
+
+          <article
+            class="product-card"
+            data-product-id="product2"
+            data-product-color="black"
+          >
+            <div class="product-image-frame">
+              <button
+                class="product-main-image-btn"
+                type="button"
+                data-open-image="product2"
+                aria-label="Enlarge SEP Black Sweatshirt image"
+              >
+                <img
+                  id="product2Image"
+                  src="images/black-jumper-front.jpg"
+                  class="carousel-img"
+                  alt="SEP Black Sweatshirt"
+                >
+              </button>
+
+              <button
+                class="carousel-arrow left"
+                type="button"
+                data-previous-image="product2"
+                aria-label="Previous image"
+              >
+                ‹
+              </button>
+
+              <button
+                class="carousel-arrow right"
+                type="button"
+                data-next-image="product2"
+                aria-label="Next image"
+              >
+                ›
+              </button>
+
+              <div
+                class="carousel-dots"
+                id="product2Dots"
+              ></div>
+            </div>
+
+            <h3 id="product2Name">
+              SEP Black Sweatshirt
+            </h3>
+
+            <p
+              class="product-price"
+              data-price="300"
+            >
+              300 DKK
+            </p>
+
+            <select
+              class="size-selector"
+              aria-label="Size"
+            >
+              <option>XS</option>
+              <option>S</option>
+              <option>M</option>
+              <option>L</option>
+              <option>XL</option>
+            </select>
+
+            <div class="flex justify-center gap-2">
+              <input
+                class="quantity-selector"
+                type="number"
+                min="1"
+                max="99"
+                value="1"
+                aria-label="Quantity"
+              >
+
+              <button
+                class="add-to-cart"
+                type="button"
+                data-product-id="product2"
+              >
+                Add
+              </button>
+            </div>
+          </article>
+
+          <article
+            class="product-card"
+            data-product-id="product3"
+            data-product-color="grey"
+          >
+            <div class="product-image-frame">
+              <button
+                class="product-main-image-btn"
+                type="button"
+                data-open-image="product3"
+                aria-label="Enlarge SEP Grey Sweatshirt image"
+              >
+                <img
+                  id="product3Image"
+                  src="images/grey-jumper-front.jpg"
+                  class="carousel-img"
+                  alt="SEP Grey Sweatshirt"
+                >
+              </button>
+
+              <button
+                class="carousel-arrow left"
+                type="button"
+                data-previous-image="product3"
+                aria-label="Previous image"
+              >
+                ‹
+              </button>
+
+              <button
+                class="carousel-arrow right"
+                type="button"
+                data-next-image="product3"
+                aria-label="Next image"
+              >
+                ›
+              </button>
+
+              <div
+                class="carousel-dots"
+                id="product3Dots"
+              ></div>
+            </div>
+
+            <h3 id="product3Name">
+              SEP Grey Sweatshirt
+            </h3>
+
+            <p
+              class="product-price"
+              data-price="300"
+            >
+              300 DKK
+            </p>
+
+            <select
+              class="size-selector"
+              aria-label="Size"
+            >
+              <option>XS</option>
+              <option>S</option>
+              <option>M</option>
+              <option>L</option>
+              <option>XL</option>
+            </select>
+
+            <div class="flex justify-center gap-2">
+              <input
+                class="quantity-selector"
+                type="number"
+                min="1"
+                max="99"
+                value="1"
+                aria-label="Quantity"
+              >
+
+              <button
+                class="add-to-cart"
+                type="button"
+                data-product-id="product3"
+              >
+                Add
+              </button>
+            </div>
+          </article>
+
+          <article
+            class="product-card"
+            data-product-id="product4"
+            data-product-color="cream"
+          >
+            <div class="product-image-frame">
+              <button
+                class="product-main-image-btn"
+                type="button"
+                data-open-image="product4"
+                aria-label="Enlarge SEP Cream Sweatshirt image"
+              >
+                <img
+                  id="product4Image"
+                  src="images/cream-jumper-front.jpg"
+                  class="carousel-img"
+                  alt="SEP Cream Sweatshirt"
+                >
+              </button>
+
+              <button
+                class="carousel-arrow left"
+                type="button"
+                data-previous-image="product4"
+                aria-label="Previous image"
+              >
+                ‹
+              </button>
+
+              <button
+                class="carousel-arrow right"
+                type="button"
+                data-next-image="product4"
+                aria-label="Next image"
+              >
+                ›
+              </button>
+
+              <div
+                class="carousel-dots"
+                id="product4Dots"
+              ></div>
+            </div>
+
+            <h3 id="product4Name">
+              SEP Cream Sweatshirt
+            </h3>
+
+            <p
+              class="product-price"
+              data-price="300"
+            >
+              300 DKK
+            </p>
+
+            <select
+              class="size-selector"
+              aria-label="Size"
+            >
+              <option>XS</option>
+              <option>S</option>
+              <option>M</option>
+              <option>L</option>
+              <option>XL</option>
+            </select>
+
+            <div class="flex justify-center gap-2">
+              <input
+                class="quantity-selector"
+                type="number"
+                min="1"
+                max="99"
+                value="1"
+                aria-label="Quantity"
+              >
+
+              <button
+                class="add-to-cart"
+                type="button"
+                data-product-id="product4"
+              >
+                Add
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <footer class="fade-section py-10 text-center text-white">
+        <p id="footerText">
+          © 2026 SEP. All rights reserved.
+        </p>
+
+        <div class="mt-4 flex justify-center gap-4">
+          <a
+            href="https://instagram.com/se_proairesis"
+            class="flex items-center justify-center rounded-full bg-gradient-to-br from-pink-500 to-purple-600 p-3 text-white"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+          >
+            <svg
+              class="social-icon"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5Zm8.88 1.12a1.13 1.13 0 1 1 0 2.26 1.13 1.13 0 0 1 0-2.26ZM12 6.5A5.5 5.5 0 1 1 6.5 12 5.51 5.51 0 0 1 12 6.5Zm0 1.5A4 4 0 1 0 16 12a4 4 0 0 0-4-4Z"></path>
+            </svg>
+          </a>
+
+          <a
+            href="https://tiktok.com/@se_proairesis"
+            class="flex items-center justify-center rounded-full border border-white/20 bg-black p-3 text-white"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="TikTok"
+          >
+            <svg
+              class="social-icon"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="M14.5 2c.34 2.1 1.58 3.63 3.7 4.1.57.13 1.18.18 1.8.14v2.63a7.22 7.22 0 0 1-2.86-.56 8.16 8.16 0 0 1-1.86-1.04v7.23a6.44 6.44 0 1 1-6.44-6.43c.32 0 .63.03.93.07v2.7a3.68 3.68 0 0 0-.93-.12 3.69 3.69 0 1 0 3.69 3.78V2h1.97Z"></path>
+            </svg>
+          </a>
+        </div>
+      </footer>
+    </main>
+
+    <div id="imageModal" class="hidden">
+      <button
+        id="imageModalClose"
+        type="button"
+        aria-label="Close image"
+      >
+        ✕
+      </button>
+
+      <button
+        id="imageModalPrev"
+        class="image-modal-arrow image-modal-left"
+        type="button"
+        aria-label="Previous image"
+      >
+        ‹
+      </button>
+
+      <div class="image-modal-frame">
+        <img
+          id="imageModalImg"
+          src=""
+          alt=""
+          class="image-modal-img"
+        >
+      </div>
+
+      <button
+        id="imageModalNext"
+        class="image-modal-arrow image-modal-right"
+        type="button"
+        aria-label="Next image"
+      >
+        ›
+      </button>
+    </div>
+
+    <div
+      id="cartSidebar"
+      class="fixed right-0 top-0 z-50 h-full w-80 translate-x-full overflow-y-auto bg-white shadow-xl transition-transform duration-300"
+    >
+      <div class="p-6">
+        <div class="mb-4 flex items-center justify-between">
+          <h3 id="cartTitle" class="text-xl font-bold">
+            Your Cart
+          </h3>
+
+          <button
+            id="closeCart"
+            type="button"
+            aria-label="Close cart"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div
+          id="cartItems"
+          class="space-y-4 text-sm"
+        ></div>
+
+        <div class="mt-4 border-t border-gray-300 pt-4">
+          <div class="mb-4 flex gap-2">
+            <button
+              id="cphYesBtn"
+              class="cph-toggle"
+              type="button"
+            >
+              In CPH
+            </button>
+
+            <button
+              id="cphNoBtn"
+              class="cph-toggle"
+              type="button"
+            >
+              Not in CPH
+            </button>
+          </div>
+
+          <div class="mb-1 flex justify-between">
+            <span id="cartSubtotalLabel">
+              Subtotal:
+            </span>
+
+            <span
+              id="cartSubtotal"
+              class="font-bold"
+            >
+              0 DKK
+            </span>
+          </div>
+
+          <div class="mb-2 flex justify-between text-sm text-gray-600">
+            <span id="cartShippingLabel">
+              Shipping:
+            </span>
+
+            <span id="cartShippingValue">
+              0 DKK
+            </span>
+          </div>
+
+          <div class="mb-3 flex justify-between border-t border-gray-300 pt-2 font-semibold">
+            <span id="cartTotalLabel">
+              Total:
+            </span>
+
+            <span id="cartTotal">
+              0 DKK
+            </span>
+          </div>
+
+          <button
+            id="openMobilePay"
+            class="mb-2 w-full rounded bg-green-500 py-2 text-white"
+            type="button"
+          >
+            <span id="cartMobilePayButton">
+              Open MobilePay
+            </span>
+          </button>
+
+          <p
+            id="cartMobilePayNote"
+            class="mb-2 text-center text-xs text-gray-500"
+          >
+            *Open MobilePay button is only valid on mobile*
+          </p>
+
+          <button
+            id="copyMobilePay"
+            class="mb-2 w-full rounded bg-gray-200 py-2"
+            type="button"
+          >
+            <span id="cartCopyOrder">
+              Copy Order Message
+            </span>
+          </button>
+
+          <button
+            id="clearCartBtn"
+            class="w-full rounded bg-black py-2 text-white"
+            type="button"
+          >
+            Clear Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="cartOverlay"
+      class="pointer-none fixed inset-0 z-40 hidden bg-black/50"
+    ></div>
+  </div>
+
+  <script>
+    const STORAGE_KEYS = {
+      language: "global_lang_v1",
+      theme: "global_theme_v1",
+      cart: "cart",
+      copenhagen: "sep_is_cph"
+    };
+
+    const SHIPPING_COST = 45;
+
+    let currentLanguage =
+      localStorage.getItem(STORAGE_KEYS.language) || "en";
+
+    let currentTheme =
+      localStorage.getItem(STORAGE_KEYS.theme) || "dark";
+
+    let isCopenhagen =
+      localStorage.getItem(STORAGE_KEYS.copenhagen) === "true";
+
+    let cart = [];
+
+    try {
+      const storedCart = JSON.parse(
+        localStorage.getItem(STORAGE_KEYS.cart) || "[]"
+      );
+
+      cart = Array.isArray(storedCart)
+        ? storedCart
+        : [];
+    } catch (error) {
+      cart = [];
+
+      localStorage.setItem(
+        STORAGE_KEYS.cart,
+        "[]"
+      );
+    }
+
+    const productMedia = {
+      product1: {
+        colour: "white",
+        images: [
+          "images/white-tshirt-front.jpg",
+          "images/white-tshirt-front-2.jpg",
+          "images/white-tshirt-front-3.jpg"
+        ]
+      },
+
+      product2: {
+        colour: "black",
+        images: [
+          "images/black-jumper-front.jpg",
+          "images/black-jumper-front-2.jpg",
+          "images/black-jumper-rear.jpg"
+        ]
+      },
+
+      product3: {
+        colour: "grey",
+        images: [
+          "images/grey-jumper-front.jpg",
+          "images/grey-jumper-front-2.jpg",
+          "images/grey-jumper-rear.jpg"
+        ]
+      },
+
+      product4: {
+        colour: "cream",
+        images: [
+          "images/cream-jumper-front.jpg",
+          "images/cream-jumper-front-2.jpg",
+          "images/cream-jumper-rear.jpg"
+        ]
+      }
+    };
+
+    const translations = {
+      en: {
+        welcomeSubtitle: "Your Choice.",
+        exit: "Exit",
+        heroTitle: "Clothes chosen for you.",
+        heroSubtitle: "Your choice.",
+        shopNow: "Shop Now",
+        viewCart: "View Cart",
+        productsTitle: "The collection.",
+        productsSubtitle: "Soft everyday pieces, pressed in Copenhagen.",
+        product1Name: "SEP White T-shirt",
+        product2Name: "SEP Black Sweatshirt",
+        product3Name: "SEP Grey Sweatshirt",
+        product4Name: "SEP Cream Sweatshirt",
+        add: "Add",
+        footer: "© 2026 SEP. All rights reserved.",
+        cartTitle: "Your Cart",
+        subtotal: "Subtotal:",
+        shipping: "Shipping:",
+        total: "Total:",
+        mobilePay: "Open MobilePay",
+        mobilePayNote: "*Open MobilePay button is only valid on mobile*",
+        copyOrder: "Copy Order Message",
+        emptyCart: "Cart is empty",
+        clearCart: "Clear Cart",
+        size: "Size",
+        colour: "Colour",
+        quantity: "Qty",
+        remove: "Remove",
+        added: "Added to cart",
+        cleared: "Cart cleared",
+        copied: "Order message copied!",
+        orderIntro: "Hi SEP, here is my order:",
+        inCopenhagen: "In CPH",
+        outsideCopenhagen: "Not in CPH",
+        black: "Black",
+        grey: "Grey",
+        cream: "Cream",
+        white: "White"
+      },
+
+      da: {
+        welcomeSubtitle: "Dit valg.",
+        exit: "Afslut",
+        heroTitle: "Tøj valgt til dig.",
+        heroSubtitle: "Dit valg.",
+        shopNow: "Shop nu",
+        viewCart: "Se kurv",
+        productsTitle: "Kollektionen.",
+        productsSubtitle: "Bløde hverdagsdele, presset i København.",
+        product1Name: "SEP hvid T-shirt",
+        product2Name: "SEP sort sweatshirt",
+        product3Name: "SEP grå sweatshirt",
+        product4Name: "SEP cream sweatshirt",
+        add: "Læg i kurv",
+        footer: "© 2026 SEP. Alle rettigheder forbeholdes.",
+        cartTitle: "Din kurv",
+        subtotal: "Subtotal:",
+        shipping: "Fragt:",
+        total: "Total:",
+        mobilePay: "Åbn MobilePay",
+        mobilePayNote: "*MobilePay-knappen virker kun som link på mobil*",
+        copyOrder: "Kopiér ordrebesked",
+        emptyCart: "Kurven er tom",
+        clearCart: "Tøm kurv",
+        size: "Størrelse",
+        colour: "Farve",
+        quantity: "Antal",
+        remove: "Fjern",
+        added: "Lagt i kurv",
+        cleared: "Kurv tømt",
+        copied: "Ordrebesked kopieret!",
+        orderIntro: "Hej SEP, her er min ordre:",
+        inCopenhagen: "I København",
+        outsideCopenhagen: "Ikke i København",
+        black: "Sort",
+        grey: "Grå",
+        cream: "Cream",
+        white: "Hvid"
+      },
+
+      cs: {
+        welcomeSubtitle: "Tvoje volba.",
+        exit: "Ukončit",
+        heroTitle: "Oblečení vybrané pro tebe.",
+        heroSubtitle: "Tvoje volba.",
+        shopNow: "Nakoupit",
+        viewCart: "Košík",
+        productsTitle: "Kolekce.",
+        productsSubtitle: "Měkké každodenní kousky, lisované v Kodani.",
+        product1Name: "SEP bílé tričko",
+        product2Name: "SEP černá mikina",
+        product3Name: "SEP šedá mikina",
+        product4Name: "SEP krémová mikina",
+        add: "Přidat",
+        footer: "© 2026 SEP. Všechna práva vyhrazena.",
+        cartTitle: "Košík",
+        subtotal: "Mezisoučet:",
+        shipping: "Doprava:",
+        total: "Celkem:",
+        mobilePay: "Otevřít MobilePay",
+        mobilePayNote: "*Tlačítko MobilePay funguje jako odkaz pouze na mobilu*",
+        copyOrder: "Zkopírovat zprávu",
+        emptyCart: "Košík je prázdný",
+        clearCart: "Vymazat košík",
+        size: "Velikost",
+        colour: "Barva",
+        quantity: "Počet",
+        remove: "Odebrat",
+        added: "Přidáno do košíku",
+        cleared: "Košík vymazán",
+        copied: "Zkopírováno!",
+        orderIntro: "Ahoj SEP, tady je moje objednávka:",
+        inCopenhagen: "V Kodani",
+        outsideCopenhagen: "Mimo Kodaň",
+        black: "Černá",
+        grey: "Šedá",
+        cream: "Krémová",
+        white: "Bílá"
+      }
+    };
+
+    const welcomeStyles = [
+      {
+        text: "ΣΕΠ",
+        font: "Cinzel, Georgia, serif",
+        size: "clamp(2.1rem, 8vw, 3.8rem)",
+        spacing: "-.02em",
+        language: "el"
+      },
+      {
+        text: "SEP",
+        font: "Futura, Helvetica, Arial, sans-serif",
+        size: "clamp(2.25rem, 8.5vw, 3.9rem)",
+        spacing: "-.04em"
+      },
+      {
+        text: "セップ",
+        font: "Noto Sans JP, sans-serif",
+        size: "clamp(1.85rem, 6.8vw, 3.2rem)",
+        spacing: "-.05em",
+        language: "ja"
+      },
+      {
+        text: "سب",
+        font: "Noto Sans Arabic, sans-serif",
+        size: "clamp(2rem, 7.5vw, 3.45rem)",
+        spacing: "0",
+        language: "ar",
+        direction: "rtl"
+      },
+      {
+        text: "셉",
+        font: "Noto Sans KR, sans-serif",
+        size: "clamp(2.15rem, 8.2vw, 3.75rem)",
+        spacing: "0",
+        language: "ko"
+      },
+      {
+        text: "ՍԵՊ",
+        font: "Noto Sans Armenian, sans-serif",
+        size: "clamp(1.95rem, 7.4vw, 3.45rem)",
+        spacing: "-.02em",
+        language: "hy"
+      },
+      {
+        text: "सेप",
+        font: "Noto Sans Devanagari, sans-serif",
+        size: "clamp(1.85rem, 6.8vw, 3.15rem)",
+        spacing: "-.03em",
+        language: "hi"
+      },
+      {
+        text: "赛普",
+        font: "Noto Sans SC, sans-serif",
+        size: "clamp(1.9rem, 7.2vw, 3.3rem)",
+        spacing: "-.02em",
+        language: "zh"
+      },
+      {
+        text: "เซพ",
+        font: "Noto Sans Thai, sans-serif",
+        size: "clamp(1.85rem, 6.8vw, 3.15rem)",
+        spacing: "-.02em",
+        language: "th"
+      },
+      {
+        text: "SEP",
+        font: "PT Mono, Menlo, monospace",
+        size: "clamp(2.05rem, 7.8vw, 3.55rem)",
+        spacing: "-.04em"
+      },
+      {
+        text: "SΞP",
+        font: "Cinzel, Futura, Helvetica, Arial, sans-serif",
+        size: "clamp(2.2rem, 8.2vw, 3.8rem)",
+        spacing: "-.03em",
+        language: "el"
+      }
+    ];
+
+    const productState = {
+      product1: {
+        index: 0,
+        touchStartX: 0
+      },
+      product2: {
+        index: 0,
+        touchStartX: 0
+      },
+      product3: {
+        index: 0,
+        touchStartX: 0
+      },
+      product4: {
+        index: 0,
+        touchStartX: 0
+      }
+    };
+
+    let welcomeStyleIndex = 0;
+    let welcomeStyleTimer = null;
+    let modalProductId = null;
+
+    function getTranslation() {
+      return translations[currentLanguage] || translations.en;
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function setText(id, text) {
+      const element = document.getElementById(id);
+
+      if (element) {
+        element.textContent = text;
+      }
+    }
+
+    function applyCurrentWelcomeStyle() {
+      const title = document.getElementById("welcomeTitle");
+
+      if (!title) {
+        return;
+      }
+
+      const item =
+        welcomeStyles[welcomeStyleIndex] ||
+        welcomeStyles[0];
+
+      title.textContent = item.text;
+      title.style.fontFamily = item.font;
+      title.style.fontSize = item.size;
+      title.style.letterSpacing = item.spacing || "0";
+      title.lang = item.language || currentLanguage;
+      title.dir = item.direction || "ltr";
+    }
+
+    function startWelcomeFontCycle() {
+      if (welcomeStyleTimer) {
+        return;
+      }
+
+      applyCurrentWelcomeStyle();
+
+      welcomeStyleTimer = window.setInterval(() => {
+        welcomeStyleIndex =
+          (welcomeStyleIndex + 1) %
+          welcomeStyles.length;
+
+        applyCurrentWelcomeStyle();
+      }, 150);
+    }
+
+    function applyTheme() {
+      document.body.classList.toggle(
+        "light-theme",
+        currentTheme === "light"
+      );
+    }
+
+    function toggleTheme() {
+      currentTheme =
+        currentTheme === "light"
+          ? "dark"
+          : "light";
+
+      localStorage.setItem(
+        STORAGE_KEYS.theme,
+        currentTheme
+      );
+
+      applyTheme();
+    }
+
+    function productName(productId) {
+      const translation = getTranslation();
+      const key = `${productId}Name`;
+
+      return translation[key] || productId;
+    }
+
+    function colourName(colour) {
+      return getTranslation()[colour] || colour;
+    }
+
+    function applyLanguage() {
+      const translation = getTranslation();
+
+      document.documentElement.lang =
+        currentLanguage;
+
+      setText(
+        "welcomeSubtitle",
+        translation.welcomeSubtitle
+      );
+
+      setText(
+        "sepTopExit",
+        translation.exit
+      );
+
+      setText(
+        "heroTitle",
+        translation.heroTitle
+      );
+
+      setText(
+        "heroSubtitle",
+        translation.heroSubtitle
+      );
+
+      setText(
+        "btnShopNow",
+        translation.shopNow
+      );
+
+      setText(
+        "btnViewCart",
+        translation.viewCart
+      );
+
+      setText(
+        "productsTitle",
+        translation.productsTitle
+      );
+
+      setText(
+        "productsSubtitle",
+        translation.productsSubtitle
+      );
+
+      setText(
+        "product1Name",
+        translation.product1Name
+      );
+
+      setText(
+        "product2Name",
+        translation.product2Name
+      );
+
+      setText(
+        "product3Name",
+        translation.product3Name
+      );
+
+      setText(
+        "product4Name",
+        translation.product4Name
+      );
+
+      setText(
+        "footerText",
+        translation.footer
+      );
+
+      setText(
+        "cartTitle",
+        translation.cartTitle
+      );
+
+      setText(
+        "cartSubtotalLabel",
+        translation.subtotal
+      );
+
+      setText(
+        "cartShippingLabel",
+        translation.shipping
+      );
+
+      setText(
+        "cartTotalLabel",
+        translation.total
+      );
+
+      setText(
+        "cartMobilePayButton",
+        translation.mobilePay
+      );
+
+      setText(
+        "cartMobilePayNote",
+        translation.mobilePayNote
+      );
+
+      setText(
+        "cartCopyOrder",
+        translation.copyOrder
+      );
+
+      setText(
+        "clearCartBtn",
+        translation.clearCart
+      );
+
+      setText(
+        "cphYesBtn",
+        translation.inCopenhagen
+      );
+
+      setText(
+        "cphNoBtn",
+        translation.outsideCopenhagen
+      );
+
+      document
+        .querySelectorAll(".add-to-cart")
+        .forEach((button) => {
+          button.textContent = translation.add;
+        });
+
+      document
+        .querySelectorAll(".welcome-lang-btn")
+        .forEach((button) => {
+          button.classList.toggle(
+            "active",
+            button.dataset.lang === currentLanguage
+          );
+        });
+
+      applyCurrentWelcomeStyle();
+      updateCart();
+    }
+
+    function setLanguage(language) {
+      if (!translations[language]) {
+        return;
+      }
+
+      currentLanguage = language;
+
+      localStorage.setItem(
+        STORAGE_KEYS.language,
+        currentLanguage
+      );
+
+      applyLanguage();
+    }
+
+    function showShop() {
+      document
+        .getElementById("welcome-screen")
+        .classList.add("hidden");
+
+      document
+        .getElementById("sep-app")
+        .classList.remove("hidden");
+
+      window.scrollTo({
+        top: 0,
+        behavior: "auto"
+      });
+    }
+
+    function showWelcome() {
+      closeCart();
+      closeImageModal();
+
+      document
+        .getElementById("sep-app")
+        .classList.add("hidden");
+
+      document
+        .getElementById("welcome-screen")
+        .classList.remove("hidden");
+
+      window.scrollTo({
+        top: 0,
+        behavior: "auto"
+      });
+    }
+
+    function getCurrentImages(productId) {
+      return productMedia[productId]?.images || [];
+    }
+
+    function renderDots(productId) {
+      const container =
+        document.getElementById(`${productId}Dots`);
+
+      const state =
+        productState[productId];
+
+      const images =
+        getCurrentImages(productId);
+
+      if (!container || !state) {
+        return;
+      }
+
+      container.innerHTML = images
+        .map((image, index) => {
+          const active =
+            index === state.index
+              ? "active"
+              : "";
+
+          return `<span class="carousel-dot ${active}"></span>`;
+        })
+        .join("");
+    }
+
+    function updateProductImage(productId) {
+      const image =
+        document.getElementById(`${productId}Image`);
+
+      const state =
+        productState[productId];
+
+      const images =
+        getCurrentImages(productId);
+
+      if (!image || !state || !images.length) {
+        return;
+      }
+
+      image.src = images[state.index];
+
+      renderDots(productId);
+
+      if (modalProductId === productId) {
+        updateImageModal();
+      }
+    }
+
+    function nextImage(productId) {
+      const state =
+        productState[productId];
+
+      const images =
+        getCurrentImages(productId);
+
+      if (!state || !images.length) {
+        return;
+      }
+
+      state.index =
+        (state.index + 1) % images.length;
+
+      updateProductImage(productId);
+    }
+
+    function previousImage(productId) {
+      const state =
+        productState[productId];
+
+      const images =
+        getCurrentImages(productId);
+
+      if (!state || !images.length) {
+        return;
+      }
+
+      state.index =
+        (state.index - 1 + images.length) %
+        images.length;
+
+      updateProductImage(productId);
+    }
+
+    function updateImageModal() {
+      if (!modalProductId) {
+        return;
+      }
+
+      const modalImage =
+        document.getElementById("imageModalImg");
+
+      const images =
+        getCurrentImages(modalProductId);
+
+      const state =
+        productState[modalProductId];
+
+      if (
+        !modalImage ||
+        !state ||
+        !images.length
+      ) {
+        return;
+      }
+
+      modalImage.src =
+        images[state.index];
+
+      modalImage.alt =
+        `${productName(modalProductId)} image ${state.index + 1}`;
+    }
+
+    function openImageModal(productId) {
+      if (!productMedia[productId]) {
+        return;
+      }
+
+      modalProductId = productId;
+
+      updateImageModal();
+
+      const modal =
+        document.getElementById("imageModal");
+
+      modal.classList.remove("hidden");
+      modal.style.display = "flex";
+
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeImageModal() {
+      const modal =
+        document.getElementById("imageModal");
+
+      if (!modal) {
+        return;
+      }
+
+      modal.classList.add("hidden");
+      modal.style.display = "";
+
+      document.body.style.overflow = "";
+      modalProductId = null;
+    }
+
+    function attachSwipe(productId) {
+      const image =
+        document.getElementById(`${productId}Image`);
+
+      const state =
+        productState[productId];
+
+      if (!image || !state) {
+        return;
+      }
+
+      image.addEventListener(
+        "touchstart",
+        (event) => {
+          state.touchStartX =
+            event.touches[0].clientX;
+        },
+        {
+          passive: true
+        }
+      );
+
+      image.addEventListener(
+        "touchend",
+        (event) => {
+          const endX =
+            event.changedTouches[0].clientX;
+
+          const difference =
+            endX - state.touchStartX;
+
+          if (difference <= -40) {
+            nextImage(productId);
+          }
+
+          if (difference >= 40) {
+            previousImage(productId);
+          }
+        },
+        {
+          passive: true
+        }
+      );
+    }
+
+    function calculateShipping(subtotal) {
+      if (
+        subtotal <= 0 ||
+        subtotal >= 500 ||
+        isCopenhagen
+      ) {
+        return 0;
+      }
+
+      return SHIPPING_COST;
+    }
+
+    function saveCart() {
+      localStorage.setItem(
+        STORAGE_KEYS.cart,
+        JSON.stringify(cart)
+      );
+    }
+
+    function updateCopenhagenButtons() {
+      document
+        .getElementById("cphYesBtn")
+        .classList.toggle(
+          "active",
+          isCopenhagen
+        );
+
+      document
+        .getElementById("cphNoBtn")
+        .classList.toggle(
+          "active",
+          !isCopenhagen
+        );
+    }
+
+    function updateCartCounter() {
+      const counter =
+        document.getElementById("cartCounter");
+
+      const numberOfItems =
+        cart.reduce((total, item) => {
+          return total + Number(item.quantity || 0);
+        }, 0);
+
+      counter.textContent =
+        numberOfItems;
+
+      counter.classList.toggle(
+        "hidden",
+        numberOfItems === 0
+      );
+    }
+
+    function updateCart() {
+      const translation = getTranslation();
+
+      const cartItems =
+        document.getElementById("cartItems");
+
+      let subtotal = 0;
+
+      cartItems.innerHTML = "";
+
+      if (!cart.length) {
+        cartItems.innerHTML =
+          `<p class="py-10 text-center text-gray-500">${escapeHTML(translation.emptyCart)}</p>`;
+      } else {
+        cart.forEach((item, index) => {
+          const itemTotal =
+            Number(item.price) *
+            Number(item.quantity);
+
+          subtotal += itemTotal;
+
+          cartItems.insertAdjacentHTML(
+            "beforeend",
+            `
+              <div class="border-b pb-2">
+                <div class="flex justify-between gap-4">
+                  <span>${escapeHTML(productName(item.productId))}</span>
+                  <span>${itemTotal} DKK</span>
+                </div>
+
+                <div class="text-gray-500">
+                  ${escapeHTML(translation.size)}:
+                  ${escapeHTML(item.size)}
+                  |
+                  ${escapeHTML(translation.colour)}:
+                  ${escapeHTML(colourName(item.colour))}
+                  |
+                  ${escapeHTML(translation.quantity)}:
+                  ${escapeHTML(item.quantity)}
+                </div>
+
+                <button
+                  type="button"
+                  class="mt-1 text-xs text-red-500"
+                  data-remove-item="${index}"
+                >
+                  ${escapeHTML(translation.remove)}
+                </button>
+              </div>
+            `
+          );
+        });
+      }
+
+      const shipping =
+        calculateShipping(subtotal);
+
+      const total =
+        subtotal + shipping;
+
+      setText(
+        "cartSubtotal",
+        `${subtotal} DKK`
+      );
+
+      setText(
+        "cartShippingValue",
+        shipping > 0
+          ? `+${shipping} DKK`
+          : "0 DKK"
+      );
+
+      setText(
+        "cartTotal",
+        `${total} DKK`
+      );
+
+      document
+        .querySelectorAll("[data-remove-item]")
+        .forEach((button) => {
+          button.addEventListener(
+            "click",
+            () => {
+              const index =
+                Number(button.dataset.removeItem);
+
+              if (Number.isInteger(index)) {
+                cart.splice(index, 1);
+                saveCart();
+                updateCart();
+              }
+            }
+          );
+        });
+
+      saveCart();
+      updateCartCounter();
+      updateCopenhagenButtons();
+    }
+
+    function addProductToCart(button) {
+      const card =
+        button.closest(".product-card");
+
+      if (!card) {
+        return;
+      }
+
+      const productId =
+        button.dataset.productId;
+
+      const size =
+        card.querySelector(".size-selector").value;
+
+      const quantityInput =
+        card.querySelector(".quantity-selector");
+
+      const quantity =
+        Math.min(
+          99,
+          Math.max(
+            1,
+            Number.parseInt(
+              quantityInput.value,
+              10
+            ) || 1
+          )
+        );
+
+      quantityInput.value = quantity;
+
+      const price =
+        Number(
+          card
+            .querySelector(".product-price")
+            .dataset.price
+        );
+
+      const colour =
+        card.dataset.productColor;
+
+      const existingItem =
+        cart.find((item) => {
+          return (
+            item.productId === productId &&
+            item.size === size &&
+            item.colour === colour
+          );
+        });
+
+      if (existingItem) {
+        existingItem.quantity += quantity;
+      } else {
+        cart.push({
+          productId,
+          size,
+          colour,
+          price,
+          quantity
+        });
+      }
+
+      saveCart();
+      updateCart();
+
+      showToast(
+        getTranslation().added
+      );
+    }
+
+    function openCart() {
+      document
+        .getElementById("cartSidebar")
+        .classList.remove("translate-x-full");
+
+      const overlay =
+        document.getElementById("cartOverlay");
+
+      overlay.classList.remove(
+        "hidden",
+        "pointer-none"
+      );
+
+      overlay.classList.add(
+        "pointer-auto"
+      );
+    }
+
+    function closeCart() {
+      const sidebar =
+        document.getElementById("cartSidebar");
+
+      const overlay =
+        document.getElementById("cartOverlay");
+
+      if (sidebar) {
+        sidebar.classList.add(
+          "translate-x-full"
+        );
+      }
+
+      if (overlay) {
+        overlay.classList.add(
+          "hidden",
+          "pointer-none"
+        );
+
+        overlay.classList.remove(
+          "pointer-auto"
+        );
+      }
+    }
+
+    function showToast(message) {
+      const popup =
+        document.createElement("div");
+
+      popup.className = "popup";
+      popup.textContent = message;
+
+      document.body.appendChild(popup);
+
+      window.setTimeout(() => {
+        popup.classList.add("show");
+      }, 10);
+
+      window.setTimeout(() => {
+        popup.classList.remove("show");
+
+        window.setTimeout(() => {
+          popup.remove();
+        }, 300);
+      }, 2000);
+    }
+
+    function copyOrderMessage() {
+      const translation = getTranslation();
+
+      if (!cart.length) {
+        showToast(
+          translation.emptyCart
+        );
+
+        return;
+      }
+
+      const subtotal =
+        cart.reduce((total, item) => {
+          return (
+            total +
+            Number(item.price) *
+            Number(item.quantity)
+          );
+        }, 0);
+
+      const shipping =
+        calculateShipping(subtotal);
+
+      const total =
+        subtotal + shipping;
+
+      const lines = [
+        translation.orderIntro,
+        ""
+      ];
+
+      cart.forEach((item) => {
+        lines.push(
+          `${item.quantity}× ${productName(item.productId)} (${translation.size}: ${item.size}, ${translation.colour}: ${colourName(item.colour)})`
+        );
+      });
+
+      lines.push("");
+
+      lines.push(
+        `${translation.subtotal} ${subtotal} DKK`
+      );
+
+      lines.push(
+        `${translation.shipping} ${shipping} DKK`
+      );
+
+      lines.push(
+        `${translation.total} ${total} DKK`
+      );
+
+      const orderMessage =
+        lines.join("\n");
+
+      if (
+        navigator.clipboard &&
+        window.isSecureContext
+      ) {
+        navigator.clipboard
+          .writeText(orderMessage)
+          .then(() => {
+            showToast(
+              translation.copied
+            );
+          })
+          .catch(() => {
+            window.prompt(
+              "Copy your order:",
+              orderMessage
+            );
+          });
+      } else {
+        window.prompt(
+          "Copy your order:",
+          orderMessage
+        );
+      }
+    }
+
+    function openMobilePay() {
+      const translation = getTranslation();
+
+      if (!cart.length) {
+        showToast(
+          translation.emptyCart
+        );
+
+        return;
+      }
+
+      const subtotal =
+        cart.reduce((total, item) => {
+          return (
+            total +
+            Number(item.price) *
+            Number(item.quantity)
+          );
+        }, 0);
+
+      const total =
+        subtotal +
+        calculateShipping(subtotal);
+
+      const isMobile =
+        /Android|iPhone|iPad|iPod/i.test(
+          navigator.userAgent
+        );
+
+      if (isMobile) {
+        window.location.href =
+          "mobilepay://";
+      } else {
+        window.alert(
+          `Open MobilePay on your phone and send ${total} DKK to 5894BZ.`
+        );
+      }
+    }
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+        applyTheme();
+        applyLanguage();
+        startWelcomeFontCycle();
+        updateCart();
+
+        document
+          .getElementById("welcomeSepBtn")
+          .addEventListener(
+            "click",
+            showShop
+          );
+
+        document
+          .getElementById("welcomeThemeToggle")
+          .addEventListener(
+            "click",
+            toggleTheme
+          );
+
+        document
+          .getElementById("sepThemeToggle")
+          .addEventListener(
+            "click",
+            toggleTheme
+          );
+
+        document
+          .getElementById("sepTopExit")
+          .addEventListener(
+            "click",
+            showWelcome
+          );
+
+        document
+          .querySelectorAll(".welcome-lang-btn")
+          .forEach((button) => {
+            button.addEventListener(
+              "click",
+              () => {
+                setLanguage(
+                  button.dataset.lang
+                );
+              }
+            );
+          });
+
+        document
+          .querySelectorAll(".add-to-cart")
+          .forEach((button) => {
+            button.addEventListener(
+              "click",
+              () => {
+                addProductToCart(button);
+              }
+            );
+          });
+
+        document
+          .querySelectorAll("[data-open-image]")
+          .forEach((button) => {
+            button.addEventListener(
+              "click",
+              () => {
+                openImageModal(
+                  button.dataset.openImage
+                );
+              }
+            );
+          });
+
+        document
+          .querySelectorAll("[data-next-image]")
+          .forEach((button) => {
+            button.addEventListener(
+              "click",
+              () => {
+                nextImage(
+                  button.dataset.nextImage
+                );
+              }
+            );
+          });
+
+        document
+          .querySelectorAll("[data-previous-image]")
+          .forEach((button) => {
+            button.addEventListener(
+              "click",
+              () => {
+                previousImage(
+                  button.dataset.previousImage
+                );
+              }
+            );
+          });
+
+        Object.keys(productMedia)
+          .forEach((productId) => {
+            attachSwipe(productId);
+            updateProductImage(productId);
+          });
+
+        document
+          .getElementById("imageModalClose")
+          .addEventListener(
+            "click",
+            closeImageModal
+          );
+
+        document
+          .getElementById("imageModalNext")
+          .addEventListener(
+            "click",
+            () => {
+              if (modalProductId) {
+                nextImage(modalProductId);
+              }
+            }
+          );
+
+        document
+          .getElementById("imageModalPrev")
+          .addEventListener(
+            "click",
+            () => {
+              if (modalProductId) {
+                previousImage(modalProductId);
+              }
+            }
+          );
+
+        document
+          .getElementById("imageModal")
+          .addEventListener(
+            "click",
+            (event) => {
+              if (
+                event.target.id ===
+                "imageModal"
+              ) {
+                closeImageModal();
+              }
+            }
+          );
+
+        document
+          .getElementById("viewCartBtn")
+          .addEventListener(
+            "click",
+            openCart
+          );
+
+        document
+          .getElementById("closeCart")
+          .addEventListener(
+            "click",
+            closeCart
+          );
+
+        document
+          .getElementById("cartOverlay")
+          .addEventListener(
+            "click",
+            closeCart
+          );
+
+        document
+          .getElementById("cphYesBtn")
+          .addEventListener(
+            "click",
+            () => {
+              isCopenhagen = true;
+
+              localStorage.setItem(
+                STORAGE_KEYS.copenhagen,
+                "true"
+              );
+
+              updateCart();
+            }
+          );
+
+        document
+          .getElementById("cphNoBtn")
+          .addEventListener(
+            "click",
+            () => {
+              isCopenhagen = false;
+
+              localStorage.setItem(
+                STORAGE_KEYS.copenhagen,
+                "false"
+              );
+
+              updateCart();
+            }
+          );
+
+        document
+          .getElementById("clearCartBtn")
+          .addEventListener(
+            "click",
+            () => {
+              cart = [];
+
+              saveCart();
+              updateCart();
+
+              showToast(
+                getTranslation().cleared
+              );
+            }
+          );
+
+        document
+          .getElementById("copyMobilePay")
+          .addEventListener(
+            "click",
+            copyOrderMessage
+          );
+
+        document
+          .getElementById("openMobilePay")
+          .addEventListener(
+            "click",
+            openMobilePay
+          );
+
+        document.addEventListener(
+          "keydown",
+          (event) => {
+            if (!modalProductId) {
+              return;
+            }
+
+            if (event.key === "Escape") {
+              closeImageModal();
+            }
+
+            if (event.key === "ArrowRight") {
+              nextImage(modalProductId);
+            }
+
+            if (event.key === "ArrowLeft") {
+              previousImage(modalProductId);
+            }
+          }
+        );
+
+        if (
+          window.gsap &&
+          window.ScrollTrigger
+        ) {
+          gsap.registerPlugin(
+            ScrollTrigger
+          );
+
+          gsap.utils
+            .toArray(".fade-section")
+            .forEach((section) => {
+              gsap.to(section, {
+                opacity: 1,
+                y: 0,
+                duration: 0.9,
+                ease: "power2.out",
+                scrollTrigger: {
+                  trigger: section,
+                  start: "top 82%",
+                  once: true
+                }
+              });
+            });
+        } else {
+          document
+            .querySelectorAll(".fade-section")
+            .forEach((section) => {
+              section.style.opacity = "1";
+              section.style.transform = "none";
+            });
+        }
+      }
+    );
+  </script>
+</body>
+</html>
