@@ -11,9 +11,27 @@
     content="SEP clothing, designed and pressed in Copenhagen."
   >
 
+  <meta name="theme-color" content="#111111">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SEP">
+
   <link
     rel="icon"
-    href="https://upload.wikimedia.org/wikipedia/commons/3/3f/Black_square.jpg"
+    type="image/png"
+    href="images/83b9b163-fa18-4d13-b601-0053e0a263c6.png?v=3"
+  >
+
+  <link
+    rel="shortcut icon"
+    type="image/png"
+    href="images/83b9b163-fa18-4d13-b601-0053e0a263c6.png?v=3"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="images/83b9b163-fa18-4d13-b601-0053e0a263c6.png?v=3"
   >
 
   <link
@@ -48,7 +66,7 @@
     }
 
     body.light-theme {
-      background: #fff;
+      background: radial-gradient(circle at top, #d4d4d4 0, #fff 100%);
       color: #000;
     }
 
@@ -280,7 +298,7 @@
     #sep-app,
     #sep-scene-main {
       min-height: 100vh;
-      background: #000;
+      background: radial-gradient(circle at top, #222 0, #000 100%);
       color: #fff;
     }
 
@@ -500,9 +518,7 @@
       border-radius: 30px;
       background: #0b0b0b;
       box-shadow: 0 30px 100px rgba(0, 0, 0, 0.55);
-    }
-
-    .image-modal-img {
+    }    .image-modal-img {
       width: 100%;
       height: 100%;
       display: block;
@@ -586,7 +602,7 @@
     /* Light theme */
 
     body.light-theme #welcome-screen {
-      background: #fff;
+      background: radial-gradient(circle at top, #d4d4d4 0, #fff 100%);
       color: #000;
     }
 
@@ -615,7 +631,7 @@
 
     body.light-theme #sep-app,
     body.light-theme #sep-scene-main {
-      background: #fff;
+      background: radial-gradient(circle at top, #d4d4d4 0, #fff 100%);
       color: #000;
     }
 
@@ -649,9 +665,10 @@
       color: #000;
     }
 
-    body.light-theme #openMobilePay {
+    body.light-theme #openMobilePay,
+    body.light-theme #openMobilePay span {
       background: #16a34a;
-      color: #fff;
+      color: #fff !important;
     }
 
     body.light-theme #cartSidebar {
@@ -770,13 +787,13 @@
   <div id="fixedSepLogo" aria-hidden="true">
     <img
       class="sep-logo-dark"
-      src="assets/3bc2f80e-8146-4553-b99d-874f1bf42b23.png"
+      src="images/3bc2f80e-8146-4553-b99d-874f1bf42b23.png"
       alt=""
     >
 
     <img
       class="sep-logo-light"
-      src="assets/83b9b163-fa18-4d13-b601-0053e0a263c6.png"
+      src="images/83b9b163-fa18-4d13-b601-0053e0a263c6.png"
       alt=""
     >
   </div>
@@ -807,13 +824,13 @@
     >
       <img
         class="sep-logo-dark"
-        src="assets/83b9b163-fa18-4d13-b601-0053e0a263c6.png"
+        src="images/83b9b163-fa18-4d13-b601-0053e0a263c6.png"
         alt="SEP"
       >
 
       <img
         class="sep-logo-light"
-        src="assets/3bc2f80e-8146-4553-b99d-874f1bf42b23.png"
+        src="images/3bc2f80e-8146-4553-b99d-874f1bf42b23.png"
         alt="SEP"
       >
     </button>
@@ -980,8 +997,7 @@
               SEP White T-shirt
             </h3>
 
-            <p
-              class="product-price"
+            <p              class="product-price"
               data-price="180"
             >
               180 DKK
@@ -1481,8 +1497,7 @@
       language: "global_lang_v1",
       theme: "global_theme_v1",
       cart: "cart",
-      copenhagen: "sep_is_cph"
-    };
+      copenhagen: "sep_is_cph"    };
 
     const SHIPPING_COST = 45;
 
@@ -1675,82 +1690,39 @@
     };
 
     const welcomeStyles = [
-      {
-        text: "ΣΕΠ",
-        font: "Cinzel, Georgia, serif",
-        size: "clamp(2.1rem, 8vw, 3.8rem)",
-        spacing: "-.02em",
-        language: "el"
-      },
-      {
-        text: "SEP",
-        font: "Futura, Helvetica, Arial, sans-serif",
-        size: "clamp(2.25rem, 8.5vw, 3.9rem)",
-        spacing: "-.04em"
-      },
-      {
-        text: "セップ",
-        font: "Noto Sans JP, sans-serif",
-        size: "clamp(1.85rem, 6.8vw, 3.2rem)",
-        spacing: "-.05em",
-        language: "ja"
-      },
-      {
-        text: "سب",
-        font: "Noto Sans Arabic, sans-serif",
-        size: "clamp(2rem, 7.5vw, 3.45rem)",
-        spacing: "0",
-        language: "ar",
-        direction: "rtl"
-      },
-      {
-        text: "셉",
-        font: "Noto Sans KR, sans-serif",
-        size: "clamp(2.15rem, 8.2vw, 3.75rem)",
-        spacing: "0",
-        language: "ko"
-      },
-      {
-        text: "ՍԵՊ",
-        font: "Noto Sans Armenian, sans-serif",
-        size: "clamp(1.95rem, 7.4vw, 3.45rem)",
-        spacing: "-.02em",
-        language: "hy"
-      },
-      {
-        text: "सेप",
-        font: "Noto Sans Devanagari, sans-serif",
-        size: "clamp(1.85rem, 6.8vw, 3.15rem)",
-        spacing: "-.03em",
-        language: "hi"
-      },
-      {
-        text: "赛普",
-        font: "Noto Sans SC, sans-serif",
-        size: "clamp(1.9rem, 7.2vw, 3.3rem)",
-        spacing: "-.02em",
-        language: "zh"
-      },
-      {
-        text: "เซพ",
-        font: "Noto Sans Thai, sans-serif",
-        size: "clamp(1.85rem, 6.8vw, 3.15rem)",
-        spacing: "-.02em",
-        language: "th"
-      },
-      {
-        text: "SEP",
-        font: "PT Mono, Menlo, monospace",
-        size: "clamp(2.05rem, 7.8vw, 3.55rem)",
-        spacing: "-.04em"
-      },
-      {
-        text: "SΞP",
-        font: "Cinzel, Futura, Helvetica, Arial, sans-serif",
-        size: "clamp(2.2rem, 8.2vw, 3.8rem)",
-        spacing: "-.03em",
-        language: "el"
-      }
+      { text: "ΣΕΠ", font: "Cinzel, Georgia, serif", size: "clamp(2.1rem, 8vw, 3.8rem)", spacing: "-.02em", language: "el" },
+      { text: "SEP", font: "Futura, 'Helvetica Neue', Arial, sans-serif", size: "clamp(2.25rem, 8.5vw, 3.9rem)", spacing: "-.04em" },
+      { text: "セップ", font: "'Noto Sans JP', sans-serif", size: "clamp(1.85rem, 6.8vw, 3.2rem)", spacing: "-.05em", language: "ja" },
+      { text: "SEP", font: "Copperplate, 'Copperplate Gothic Light', serif", size: "clamp(2rem, 7.4vw, 3.45rem)", spacing: "-.04em" },
+      { text: "سب", font: "'Noto Sans Arabic', sans-serif", size: "clamp(2rem, 7.5vw, 3.45rem)", spacing: "0", language: "ar", direction: "rtl" },
+      { text: "SEP", font: "'Arial Black', Arial, sans-serif", size: "clamp(2rem, 7.7vw, 3.55rem)", spacing: "-.06em" },
+      { text: "셉", font: "'Noto Sans KR', sans-serif", size: "clamp(2.15rem, 8.2vw, 3.75rem)", spacing: "0", language: "ko" },
+      { text: "SEP", font: "Cochin, Georgia, serif", size: "clamp(2.2rem, 8.3vw, 3.85rem)", spacing: "-.03em" },
+      { text: "ՍԵՊ", font: "'Noto Sans Armenian', sans-serif", size: "clamp(1.95rem, 7.4vw, 3.45rem)", spacing: "-.02em", language: "hy" },
+      { text: "SEP", font: "'DIN Condensed', sans-serif", size: "clamp(2.35rem, 8.8vw, 4rem)", spacing: ".02em" },
+      { text: "सेप", font: "'Noto Sans Devanagari', sans-serif", size: "clamp(1.85rem, 6.8vw, 3.15rem)", spacing: "-.03em", language: "hi" },
+      { text: "SEP", font: "Luminari, fantasy", size: "clamp(1.95rem, 7.4vw, 3.35rem)", spacing: "-.04em" },
+      { text: "赛普", font: "'Noto Sans SC', sans-serif", size: "clamp(1.9rem, 7.2vw, 3.3rem)", spacing: "-.02em", language: "zh" },
+      { text: "SEP", font: "'PT Mono', Menlo, monospace", size: "clamp(2.05rem, 7.8vw, 3.55rem)", spacing: "-.04em" },
+      { text: "СЭП", font: "Inter, Arial, sans-serif", size: "clamp(2rem, 7.6vw, 3.45rem)", spacing: "-.04em", language: "ru" },
+      { text: "SEP", font: "SignPainter, 'Brush Script MT', cursive", size: "clamp(1.75rem, 6.4vw, 2.95rem)", spacing: "-.06em" },
+      { text: "เซพ", font: "'Noto Sans Thai', sans-serif", size: "clamp(1.85rem, 6.8vw, 3.15rem)", spacing: "-.02em", language: "th" },
+      { text: "SEP", font: "'Academy Engraved LET', serif", size: "clamp(2rem, 7.4vw, 3.45rem)", spacing: "-.03em" },
+      { text: "SÉP", font: "Futura, 'Helvetica Neue', Arial, sans-serif", size: "clamp(2.1rem, 7.9vw, 3.6rem)", spacing: "-.04em", language: "vi" },
+      { text: "SEP", font: "'Helvetica Neue', Helvetica, Arial, sans-serif", size: "clamp(2.25rem, 8.5vw, 3.9rem)", spacing: "0" },
+      { text: "SEP", font: "AppleMyungjo, 'Noto Sans KR', serif", size: "clamp(2.05rem, 7.8vw, 3.55rem)", spacing: "-.03em" },
+      { text: "SEP", font: "'Courier New', Courier, monospace", size: "clamp(2.05rem, 7.8vw, 3.55rem)", spacing: "-.03em" },
+      { text: "SEP", font: "'Corsiva Hebrew', serif", size: "clamp(2rem, 7.5vw, 3.45rem)", spacing: "-.04em" },
+      { text: "SEP", font: "Impact, sans-serif", size: "clamp(2.1rem, 8vw, 3.65rem)", spacing: "-.03em" },
+      { text: "SEP", font: "'Arial Rounded MT Bold', Arial, sans-serif", size: "clamp(2rem, 7.7vw, 3.55rem)", spacing: "-.06em" },
+      { text: "SEP", font: "Didot, serif", size: "clamp(2.25rem, 8.4vw, 3.9rem)", spacing: "-.04em" },
+      { text: "SEP", font: "Menlo, monospace", size: "clamp(2.05rem, 7.8vw, 3.55rem)", spacing: "-.04em" },
+      { text: "SEP", font: "Skia, sans-serif", size: "clamp(2.05rem, 7.8vw, 3.55rem)", spacing: "-.03em" },
+      { text: "SEP", font: "Rockwell, serif", size: "clamp(2.05rem, 7.8vw, 3.55rem)", spacing: "-.03em" },
+      { text: "SEP", font: "'Brush Script MT', cursive", size: "clamp(1.8rem, 6.6vw, 3rem)", spacing: "-.05em" },
+      { text: "SEP", font: "Phosphate, sans-serif", size: "clamp(2rem, 7.6vw, 3.5rem)", spacing: "-.05em" },
+      { text: "SEP", font: "Zapfino, cursive", size: "clamp(1.45rem, 5.4vw, 2.35rem)", spacing: "-.08em" },
+      { text: "SΞP", font: "Cinzel, Futura, 'Helvetica Neue', Arial, sans-serif", size: "clamp(2.2rem, 8.2vw, 3.8rem)", spacing: "-.03em", language: "el" }
     ];
 
     const productState = {
@@ -1758,14 +1730,17 @@
         index: 0,
         touchStartX: 0
       },
+
       product2: {
         index: 0,
         touchStartX: 0
       },
+
       product3: {
         index: 0,
         touchStartX: 0
       },
+
       product4: {
         index: 0,
         touchStartX: 0
@@ -1833,10 +1808,20 @@
     }
 
     function applyTheme() {
+      const isLight =
+        currentTheme === "light";
+
       document.body.classList.toggle(
         "light-theme",
-        currentTheme === "light"
+        isLight
       );
+
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute(
+          "content",
+          isLight ? "#d4d4d4" : "#111111"
+        );
     }
 
     function toggleTheme() {
@@ -2017,9 +2002,7 @@
       );
 
       applyLanguage();
-    }
-
-    function showShop() {
+    }    function showShop() {
       document
         .getElementById("welcome-screen")
         .classList.add("hidden");
@@ -2141,7 +2124,7 @@
     }
 
     function updateImageModal() {
-      if (!modalProductId) {
+      if (!modalProductId)) {
         return;
       }
 
@@ -2518,9 +2501,7 @@
         document.createElement("div");
 
       popup.className = "popup";
-      popup.textContent = message;
-
-      document.body.appendChild(popup);
+      popup.textContent = message;      document.body.appendChild(popup);
 
       window.setTimeout(() => {
         popup.classList.add("show");
